@@ -256,7 +256,15 @@ long double getSideralTime(long double JD, bool apparent=false) {
 }
 
 // toHms and toDms should be reused inside Angle?
-std::string toHms(long double hour) {
+// This is messy for now ... need to cleanup handling of angles in general.
+long double toDecimal(long double angleInhms) {
+    int degrees = trunc(angleInhms);
+    int min = (angleInhms - degrees)*100;
+    long double sec = (angleInhms - degrees - (min / 100.))*10000;
+    return degrees + min/60.0 + sec/3600;
+}
+
+std::string toHmsString(long double hour) {
     std::string tmp;
     int hour_str = trunc(hour);
     int min = (hour - hour_str)*60;
@@ -265,7 +273,7 @@ std::string toHms(long double hour) {
     return tmp;
 }
 
-std::string toDms(long double angleInDegrees) {
+std::string toDmsString(long double angleInDegrees) {
     std::string tmp;
     int degrees_str = trunc(angleInDegrees);
     int min = (angleInDegrees - degrees_str)*60;
@@ -569,8 +577,9 @@ int main()
     // Ex. 13b
     {
         cout << endl << "Ex. 13b" << endl;
-        long double  L = 77.06555555556;
-        long double  Phi = 38.9213888889;
+        long double  L = toDecimal(77.0356);
+        long double  Phi = toDecimal(38.5517);
+        // TODO: also allow use of hms format as entry for Alpha en Delta
         long double  Alpha = 347.3193375;
         long double  Delta = -6.71989166667;
         long double Theta0 = getSideralTime(Date(1987,4,10, 19,21,0).get_JD());
@@ -672,9 +681,9 @@ int main()
             m[i] = m[i] + deltam[i];
             cout << "m[" << i << "] = " << m[i] << endl;
         }
-        cout << "Rising  = " << toHms(24*m[1]) << endl;
-        cout << "Transit = " << toHms(24*m[0]) << endl;
-        cout << "Setting = " << toHms(24*m[2]) << endl;
+        cout << "Rising  = " << toHmsString(24*m[1]) << endl;
+        cout << "Transit = " << toHmsString(24*m[0]) << endl;
+        cout << "Setting = " << toHmsString(24*m[2]) << endl;
     }
 
     // Ex. 22a
@@ -725,19 +734,19 @@ int main()
         getNutationAndObliquity(JDE, deltaPsi, deltaEpsilon, Epsilon0, Epsilon);
         cout << "deltaPsi  = " << deltaPsi << endl;
         cout << "deltaEpsilon  = " << deltaEpsilon << endl;
-        cout << "Epsilon0  = " << toDms(Epsilon0) << endl;
-        cout << "Epsilon  = " << toDms(Epsilon) << endl;
+        cout << "Epsilon0  = " << toDmsString(Epsilon0) << endl;
+        cout << "Epsilon  = " << toDmsString(Epsilon) << endl;
         long double Lambda = sunlongitude + (deltaPsi/(60*60)) - ((20.4898/(60*60))/R);
         cout << "sunlongitude = " << Lambda << endl;
-        cout << "sunlongitude = " << toDms(Lambda) << endl;
+        cout << "sunlongitude = " << toDmsString(Lambda) << endl;
 
         long double Alpha;
         long double Delta;
         fromEclipticalToEquatorial(Alpha, Delta, Epsilon, Beta, Lambda);
         cout << "Alpha = " << Alpha << endl;
         cout << "Delta = " << Delta << endl;
-        cout << "Alpha = " << toHms(Alpha/15) << endl;
-        cout << "Delta = " << toDms(Delta) << endl;
+        cout << "Alpha = " << toHmsString(Alpha/15) << endl;
+        cout << "Delta = " << toDmsString(Delta) << endl;
     }
 
     // Ex. 32a
