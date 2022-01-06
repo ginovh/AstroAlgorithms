@@ -335,6 +335,9 @@ public:
     }
 };
 
+// TODO: acos, atan2 en asin geven radian terug. Om die *180.0/M_PI niet te vergeten Dit ergens aanpassen? asin overload?
+// Of nieuwe acos_d() ? Of Angle constructor die radians als arg neemt?
+
 long double sin(Angle a) {
     return sin(a.angleInDegrees * M_PI / 180.0);
 }
@@ -578,10 +581,10 @@ int main()
     // Ex. 13b
     {
         cout << endl << "Ex. 13b" << endl;
-        long double  L = toDecimal(77.0356);
-        long double  Phi = toDecimal(38.5517);
-        long double  Alpha = toDecimal(23.0916641)*15;
-        long double  Delta = toDecimal(-6.431161);
+        long double L = toDecimal(77.0356);
+        long double Phi = toDecimal(38.5517);
+        long double Alpha = toDecimal(23.0916641)*15;
+        long double Delta = toDecimal(-6.431161);
         long double Theta0 = getSideralTime(Date(1987,4,10, 19,21,0).get_JD());
         long double A;
         long double h;
@@ -593,23 +596,23 @@ int main()
     // Ex. 13b
     {
         cout << endl << "Ex. 13b with Angle class" << endl;
-        // TODO: acos, atan2 en asin geven radian terug. Om die *180.0/M_PI niet te vergeten Dit ergens aanpassen? asin overload?
-        // Of nieuwe acos_d() ? Of Angle constructor die radians als arg neemt?
         Angle L = Angle(77,3,56.0);
         Angle Phi = Angle(38,55,17);
         Angle Alpha = Angle(23,9,16.641, Angle::HMS);
         Angle Delta = Angle(-6,43,11.61);
-        Angle H = Angle(getSideralTime(Date(1987,4,10, 19,21,0).get_JD())) - L - Alpha;
-        cout << "H = " << H.angleInDegrees << endl;
-        cout << "A = " << atan2(sin(H), ((cos(H)*sin(Phi))-(tan(Delta)*cos(Phi)))) *180.0/M_PI << endl;
-        cout << "h = " << asin(sin(Phi)*sin(Delta) + cos(Phi)*cos(Delta)*cos(H)) *180.0/M_PI << endl;
+        long double Theta0 = getSideralTime(Date(1987,4,10, 19,21,0).get_JD());
+        long double A;
+        long double h;
+        fromEquatorialToHorizontal(L.angleInDegrees, Phi.angleInDegrees, Alpha.angleInDegrees, Delta.angleInDegrees, Theta0, A, h);
+        cout << "A = " << A << endl;
+        cout << "h = " << h << endl;
     }
 
     // Ex. 15a
+    cout << endl << "Ex. 15a" << endl;
     Angle L = Angle(71,5,0);
     Angle Phi = Angle(42,20,0);
     long double Theta0 = getSideralTime(Date(1988,3,20, 0,0,0).get_JD());
-    cout << endl << "Ex. 15a" << endl;
     cout << "Theta0 = " << Theta0 << endl;
     Angle Alpha[3] = {Angle(40.68021), Angle(41.73129), Angle(42.78204)};
     Angle Delta[3] = {Angle(18.04761), Angle(18.44092), Angle(18.82742)};
