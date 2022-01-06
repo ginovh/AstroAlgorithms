@@ -261,6 +261,7 @@ long double toDecimal(long double angleInhms) {
     int degrees = trunc(angleInhms);
     int min = (angleInhms - degrees)*100;
     long double sec = (angleInhms - degrees - (min / 100.))*10000;
+    // Note: don't take abs value of min and sec if angleInhms<0 as everything is added mathematically, so if they are negative this is correct.
     return degrees + min/60.0 + sec/3600;
 }
 
@@ -579,9 +580,8 @@ int main()
         cout << endl << "Ex. 13b" << endl;
         long double  L = toDecimal(77.0356);
         long double  Phi = toDecimal(38.5517);
-        // TODO: also allow use of hms format as entry for Alpha en Delta
-        long double  Alpha = 347.3193375;
-        long double  Delta = -6.71989166667;
+        long double  Alpha = toDecimal(23.0916641)*15;
+        long double  Delta = toDecimal(-6.431161);
         long double Theta0 = getSideralTime(Date(1987,4,10, 19,21,0).get_JD());
         long double A;
         long double h;
