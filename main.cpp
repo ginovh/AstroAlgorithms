@@ -477,6 +477,17 @@ void fromEclipticalToEquatorial(long double& Alpha, long double& Delta, long dou
     Alpha = to360(Alpha);
 }
 
+// Arguments in degrees
+void fromEquatorialToHorizontal(long double L, long double Phi, long double Alpha, long double Delta, long double Theta0, long double& A, long double& h) {
+    long double  H = Theta0 - L - Alpha;
+    // Convert to radians
+    H = H *M_PI/180;
+    Phi = Phi *M_PI/180;
+    Delta = Delta *M_PI/180;
+    A = atan2(sin(H), ((cos(H)*sin(Phi))-(tan(Delta)*cos(Phi)))) *180.0/M_PI;
+    h = asin(sin(Phi)*sin(Delta) + cos(Phi)*cos(Delta)*cos(H)) *180.0/M_PI;
+}
+
 int main()
 {
     cout.precision(12);
@@ -562,16 +573,10 @@ int main()
         long double  Phi = 38.9213888889;
         long double  Alpha = 347.3193375;
         long double  Delta = -6.71989166667;
-        long double  H = getSideralTime(Date(1987,4,10, 19,21,0).get_JD()) - L - Alpha;
-        cout << "H = " << H << endl;
-        // Convert to radians
-        H = H *M_PI/180;
-        Phi = Phi *M_PI/180;
-        Delta = Delta *M_PI/180;
+        long double Theta0 = getSideralTime(Date(1987,4,10, 19,21,0).get_JD());
         long double A;
         long double h;
-        A = atan2(sin(H), ((cos(H)*sin(Phi))-(tan(Delta)*cos(Phi)))) *180.0/M_PI;
-        h = asin(sin(Phi)*sin(Delta) + cos(Phi)*cos(Delta)*cos(H)) *180.0/M_PI;
+        fromEquatorialToHorizontal(L, Phi, Alpha, Delta, Theta0, A, h);
         cout << "A = " << A << endl;
         cout << "h = " << h << endl;
     }
