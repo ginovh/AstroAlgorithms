@@ -505,9 +505,9 @@ int main()
     cout << "floor(5.9999) = " << floor(5.9999) << endl;
     cout << "floor(-7.83) = " << floor(-7.83) << endl;
 
-    // Chap. 7
+    // Ex. 7a & 7b
     cout << "Date(1957,10,4.81) = " << Date(1957,10,4.81) << endl;
-    cout << "Date(1957,10,4.81) = " << Date(333,1,27.5) << endl;
+    cout << "Date(333,1,27.5) = " << Date(333,1,27.5) << endl;
     cout << "Date(1957,10,4.81) = " << Date(1957,10,4.81).get_JD() << endl;
 
     cout.precision(4);
