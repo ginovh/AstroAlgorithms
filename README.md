@@ -2,11 +2,14 @@
 
 This is a very early version, just to backup my sources.
 Goal is to implement all algorithms as described in the book "Astronomical Algorithms" from Jean Meeus.
-And use this library in y other astro repositories.
 
 **Usage:**
 TBD
 
 **To Build:**
-At this moment you need to download VSOP87 files seperately.
-Open CMakeLists.txt file in QtCreator
+
+- Open CMakeLists.txt file in QtCreator or build from command-line.
+- VSOP87 files are not checked in, so you need to download VSOP87 files separately to run VSOP87 tests. See also:
+[https://en.wikipedia.org/wiki/VSOP_(planets)](https://en.wikipedia.org/wiki/VSOP_(planets))
+[https://cdsarc.cds.unistra.fr/viz-bin/cat/VI/87#/article]()
+[https://ftp.imcce.fr/pub/ephem/planets/vsop87/]()
