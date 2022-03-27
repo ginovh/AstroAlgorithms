@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_subdirectory(libmeeus)
+add_subdirectory(tools)
 
 add_executable(ExampleTest main.cpp)
 
