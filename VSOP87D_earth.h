@@ -1,4 +1,3 @@
-#include <vector>
 #include "libmeeus/libmeeus.h"
 
 vsop_var L_temp = {

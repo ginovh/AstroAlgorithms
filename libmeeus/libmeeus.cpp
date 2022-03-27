@@ -256,12 +256,11 @@ long double to_0_1_range(long double a) {
 
 void getVSOPLBR(string filename, VSOPLBR& planetLBR) {
     ifstream vsopfile(filename);
-    string line;
     if (!vsopfile) {
         cout << "could not open file " << filename << endl;
     }
 
-    // TODO: write out vsop data to headers with struct containing all these terms?
+    string line;
     string dummy;
     int old_variable = 1;
     int terms;

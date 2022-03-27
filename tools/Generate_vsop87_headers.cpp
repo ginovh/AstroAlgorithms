@@ -11,31 +11,57 @@ using namespace std;
 
 #include "libmeeus.h"
 
-void GenVSOPLBR(string filename) {
+void GenVSOPLBR(string vsopInputFilename, string headerOutputFilename) {
     VSOPLBR planetLBR;
-    ifstream vsopfile(filename);
-    string line;
+    ifstream vsopfile(vsopInputFilename);
     if (!vsopfile) {
-        cout << "could not open file " << filename << endl;
+        cout << "could not open file " << vsopInputFilename << endl;
+    }
+    ofstream headerfile(headerOutputFilename);
+    if (!headerfile) {
+        cout << "could not open file " << headerOutputFilename << endl;
     }
 
+    headerfile << "#include \"libmeeus/libmeeus.h\"" << endl;
+
+    string line;
     string dummy;
-    int old_variable = 1;
+    int old_variable = 1; // 1:L, 2:B, 3:R
     int terms;
+    string degree_of_T;
     VSOPterm term;
     vsop_series series_tmp;
     vsop_var tmp;
     while (getline(vsopfile, line)){
         stringstream ss(line);
         int variable;
-        ss >> dummy >> dummy >> dummy >> dummy >> dummy >> variable >> dummy >> dummy >> terms;
-        cout << "var=" << variable << ", terms=" << terms << endl;
-        series_tmp.clear();
+        ss >> dummy >> dummy >> dummy >> dummy >> dummy >> variable >> dummy >> degree_of_T >> terms;
+        cout << "var=" << variable << ", terms=" << terms << endl; // read var and #terms in the series
+
+        if (degree_of_T == "*T**0") {
+            switch (variable) {
+            case 1:
+                headerfile << "vsop_var L_temp = {" << endl;
+                break;
+            case 2:
+                headerfile << "vsop_var B_temp = {" << endl;
+                break;
+            case 3:
+                headerfile << "vsop_var R_temp = {" << endl;
+                break;
+            default: cout << "error";
+                break;
+            }
+        }
+        headerfile << "    // " << degree_of_T << endl;
+        headerfile << "    {" << endl;
+
         for (int i=0; i<terms; i++) {
             getline(vsopfile, line);
             ss.str(line.substr(80));
-            ss >> term.A >> term.B >> term.C;
-            series_tmp.push_back(term);
+            string A,B,C;
+            ss >> A >> B >> C;
+            headerfile << "        {" << A << "," << B << "," << C << "}," << endl;
         }
         if (old_variable == variable) {
             tmp.push_back(series_tmp);
@@ -66,6 +92,9 @@ int main()
     struct VSOPLBR planetLBR;
     string filename("/home/ginovh/Programming/astro/VI_81/VSOP87D.ear");
     getVSOPLBR(filename, planetLBR);
+
+    string genfilename("generated_VSOP87D_ear.h");
+    GenVSOPLBR(filename, genfilename);
 
     return 0;
 }
