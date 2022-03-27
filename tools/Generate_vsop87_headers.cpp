@@ -22,21 +22,23 @@ void GenVSOPLBR(string vsopInputFilename, string headerOutputFilename) {
         cout << "could not open file " << headerOutputFilename << endl;
     }
 
-    headerfile << "#include \"libmeeus/libmeeus.h\"" << endl;
+    headerfile << "#include \"libmeeus/libmeeus.h\"" << endl << endl;
 
     string line;
     string dummy;
     int old_variable = 1; // 1:L, 2:B, 3:R
     int terms;
     string degree_of_T;
-    VSOPterm term;
-    vsop_series series_tmp;
-    vsop_var tmp;
     while (getline(vsopfile, line)){
         stringstream ss(line);
         int variable;
         ss >> dummy >> dummy >> dummy >> dummy >> dummy >> variable >> dummy >> degree_of_T >> terms;
         cout << "var=" << variable << ", terms=" << terms << endl; // read var and #terms in the series
+
+        if (old_variable != variable) {
+            old_variable = variable;
+            headerfile << "};" << endl << endl;
+        }
 
         if (degree_of_T == "*T**0") {
             switch (variable) {
@@ -63,28 +65,14 @@ void GenVSOPLBR(string vsopInputFilename, string headerOutputFilename) {
             ss >> A >> B >> C;
             headerfile << "        {" << A << "," << B << "," << C << "}," << endl;
         }
-        if (old_variable == variable) {
-            tmp.push_back(series_tmp);
-        } else {
-            switch (old_variable) {
-            case 1: planetLBR.L=tmp;
-                break;
-            case 2: planetLBR.B=tmp;
-                break;
-            default: cout << "error";
-                break;
-            }
-            old_variable = variable;
-            tmp.clear();
-            tmp.push_back(series_tmp);
-        }
+        headerfile << "    }," << endl;
     }
     // only when while(getline()) is finished, the last var, R, is completey read.
-    // That's also why switch above only goes to 2
-    planetLBR.R=tmp;
+    headerfile << "};" << endl << endl;
 }
 
-#include "../VSOP87D_earth.h"
+//#include "../VSOP87D_earth.h"
+#include "../generated_VSOP87D_ear.h"
 
 int main()
 {
