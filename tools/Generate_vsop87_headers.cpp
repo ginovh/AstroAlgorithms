@@ -18,18 +18,17 @@ void getVSOPLBR(string filename, VSOPLBR& planetLBR) {
         cout << "could not open file " << filename << endl;
     }
 
-    // TODO: write out vsop data to headers with struct containing all these terms?
     string dummy;
     int old_variable = 1;
     int terms;
     VSOPterm term;
     vsop_series series_tmp;
-    var tmp;
+    vsop_var tmp;
     while (getline(vsopfile, line)){
         stringstream ss(line);
         int variable;
         ss >> dummy >> dummy >> dummy >> dummy >> dummy >> variable >> dummy >> dummy >> terms;
-        //            cout << "var=" << variable << ", terms=" << terms << endl;
+        cout << "var=" << variable << ", terms=" << terms << endl;
         series_tmp.clear();
         for (int i=0; i<terms; i++) {
             getline(vsopfile, line);
@@ -60,5 +59,10 @@ void getVSOPLBR(string filename, VSOPLBR& planetLBR) {
 
 int main()
 {
+    cout << endl << "Generate VSOP87 Earth" << endl;
+    struct VSOPLBR planetLBR;
+    string filename("/home/ginovh/Programming/astro/VI_81/VSOP87D.ear");
+    getVSOPLBR(filename, planetLBR);
+
     return 0;
 }

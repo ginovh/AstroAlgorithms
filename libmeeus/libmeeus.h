@@ -151,11 +151,11 @@ struct VSOPterm {
     long double C;
 };
 typedef vector<VSOPterm> vsop_series;
-typedef vector<vsop_series> var;
+typedef vector<vsop_series> vsop_var;
 struct VSOPLBR{
-    var L;
-    var B;
-    var R;
+    vsop_var L;
+    vsop_var B;
+    vsop_var R;
 };
 
 void getVSOPLBR(string filename, VSOPLBR& planetLBR);

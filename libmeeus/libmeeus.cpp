@@ -267,7 +267,7 @@ void getVSOPLBR(string filename, VSOPLBR& planetLBR) {
     int terms;
     VSOPterm term;
     vsop_series series_tmp;
-    var tmp;
+    vsop_var tmp;
     while (getline(vsopfile, line)){
         stringstream ss(line);
         int variable;
