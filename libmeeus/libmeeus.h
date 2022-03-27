@@ -1,3 +1,6 @@
+#ifndef LIBMEEUS_H
+#define LIBMEEUS_H
+
 #define _USE_MATH_DEFINES
 
 #include <iostream>
@@ -170,3 +173,5 @@ void fromEclipticalToEquatorial(long double& Alpha, long double& Delta, long dou
 
 // Arguments in degrees
 void fromEquatorialToHorizontal(long double L, long double Phi, long double Alpha, long double Delta, long double Theta0, long double& A, long double& h);
+
+#endif // LIBMEEUS_H

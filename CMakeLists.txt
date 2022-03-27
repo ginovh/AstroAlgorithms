@@ -11,6 +11,5 @@ add_subdirectory(tests)
 
 enable_testing()
 
-# does the application run
-add_test(NAME Runs COMMAND ExampleTest1 )
-add_test(NAME Generate1 COMMAND Generate_VSOP87_headers )
+add_test(NAME ExampleTest1 COMMAND ExampleTest1 )
+add_test(NAME GenerateVSOPTest1 COMMAND Generate_VSOP87_headers )

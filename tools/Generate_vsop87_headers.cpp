@@ -11,7 +11,8 @@ using namespace std;
 
 #include "libmeeus.h"
 
-void getVSOPLBR(string filename, VSOPLBR& planetLBR) {
+void GenVSOPLBR(string filename) {
+    VSOPLBR planetLBR;
     ifstream vsopfile(filename);
     string line;
     if (!vsopfile) {
@@ -56,6 +57,8 @@ void getVSOPLBR(string filename, VSOPLBR& planetLBR) {
     // That's also why switch above only goes to 2
     planetLBR.R=tmp;
 }
+
+#include "../VSOP87D_earth.h"
 
 int main()
 {
