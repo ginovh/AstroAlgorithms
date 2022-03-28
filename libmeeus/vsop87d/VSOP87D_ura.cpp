@@ -1,7 +1,4 @@
-#ifndef VSOP87D_ura_H
-#define VSOP87D_ura_H
-
-#include "libmeeus.h"
+#include "VSOP87D.h"
 
 vsop_var L_ura = {
     // *T**0
@@ -4048,6 +4045,4 @@ vsop_var R_ura = {
         {0.00000003093,3.14159265359,0.00000000000},
     },
 };
-
-#endif // VSOP87D_ura_H
 

@@ -1,7 +1,4 @@
-#ifndef VSOP87D_jup_H
-#define VSOP87D_jup_H
-
-#include "libmeeus.h"
+#include "VSOP87D.h"
 
 vsop_var L_jup = {
     // *T**0
@@ -3548,6 +3545,4 @@ vsop_var R_jup = {
         {0.00000001033,4.50671820436,529.69096509460},
     },
 };
-
-#endif // VSOP87D_jup_H
 

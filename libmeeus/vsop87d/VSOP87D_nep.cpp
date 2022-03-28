@@ -1,7 +1,4 @@
-#ifndef VSOP87D_nep_H
-#define VSOP87D_nep_H
-
-#include "libmeeus.h"
+#include "VSOP87D.h"
 
 vsop_var L_nep = {
     // *T**0
@@ -1991,6 +1988,4 @@ vsop_var R_nep = {
         {0.00000002295,5.67776133184,168.05251279940},
     },
 };
-
-#endif // VSOP87D_nep_H
 

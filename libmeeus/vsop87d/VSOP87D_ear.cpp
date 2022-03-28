@@ -1,7 +1,4 @@
-#ifndef VSOP87D_ear_H
-#define VSOP87D_ear_H
-
-#include "libmeeus.h"
+#include "VSOP87D.h"
 
 vsop_var L_ear = {
     // *T**0
@@ -2487,6 +2484,4 @@ vsop_var R_ear = {
         {0.00000000001,0.38068797142,18849.22754997420},
     },
 };
-
-#endif // VSOP87D_ear_H
 

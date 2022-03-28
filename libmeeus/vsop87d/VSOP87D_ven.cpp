@@ -1,7 +1,4 @@
-#ifndef VSOP87D_ven_H
-#define VSOP87D_ven_H
-
-#include "libmeeus.h"
+#include "VSOP87D.h"
 
 vsop_var L_ven = {
     // *T**0
@@ -1747,6 +1744,4 @@ vsop_var R_ven = {
         {0.00000000002,5.29627718483,20426.57109242200},
     },
 };
-
-#endif // VSOP87D_ven_H
 

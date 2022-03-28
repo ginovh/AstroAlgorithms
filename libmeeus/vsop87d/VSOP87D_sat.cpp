@@ -1,7 +1,4 @@
-#ifndef VSOP87D_sat_H
-#define VSOP87D_sat_H
-
-#include "libmeeus.h"
+#include "VSOP87D.h"
 
 vsop_var L_sat = {
     // *T**0
@@ -5824,6 +5821,4 @@ vsop_var R_sat = {
         {0.00000000837,5.04769794123,124.43341522100},
     },
 };
-
-#endif // VSOP87D_sat_H
 

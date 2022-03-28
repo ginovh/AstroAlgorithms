@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 
+#include "vsop87d/VSOP87D.h"
+
 using namespace std;
 
 long INT(long double value);
@@ -147,19 +149,6 @@ long double cos(Angle a);
 long double tan(Angle a);
 
 long double to_0_1_range(long double a);
-
-struct VSOPterm {
-    long double A;
-    long double B;
-    long double C;
-};
-typedef vector<VSOPterm> vsop_series;
-typedef vector<vsop_series> vsop_var;
-struct VSOPLBR{
-    vsop_var L;
-    vsop_var B;
-    vsop_var R;
-};
 
 void getHeliocentric(long double JDE, VSOPLBR planetLBR, long double& L, long double& B, long double& R);
 

@@ -215,8 +215,6 @@ int main()
         cout << "Epsilon  = " << Angle(Epsilon).toDms() << endl;
     }
 
-#include "VSOP87D.h"
-
     // Ex. 25b
     {
         cout << endl << "Ex. 25b" << endl;

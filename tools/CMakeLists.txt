@@ -1,10 +1,8 @@
-add_executable(Generate_VSOP87_headers Generate_vsop87_headers.cpp)
+add_executable(Generate_VSOP87_code Generate_vsop87_code.cpp)
 
-target_link_libraries(Generate_VSOP87_headers PUBLIC libmeeus)
+target_link_libraries(Generate_VSOP87_code PUBLIC libmeeus)
 
-# add the binary tree to the search path for include files
-# so that we will find libmeeus.h
-target_include_directories(Generate_VSOP87_headers PUBLIC
+target_include_directories(Generate_VSOP87_code PUBLIC
                           "${PROJECT_BINARY_DIR}"
                           "${PROJECT_SOURCE_DIR}/libmeeus"
                           )

@@ -1,7 +1,4 @@
-#ifndef VSOP87D_mar_H
-#define VSOP87D_mar_H
-
-#include "libmeeus.h"
+#include "VSOP87D.h"
 
 vsop_var L_mar = {
     // *T**0
@@ -5548,6 +5545,4 @@ vsop_var R_mar = {
         {0.00000000012,3.14159265359,0.00000000000},
     },
 };
-
-#endif // VSOP87D_mar_H
 

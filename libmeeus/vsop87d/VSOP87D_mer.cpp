@@ -1,7 +1,4 @@
-#ifndef VSOP87D_mer_H
-#define VSOP87D_mer_H
-
-#include "libmeeus.h"
+#include "VSOP87D.h"
 
 vsop_var L_mer = {
     // *T**0
@@ -6892,6 +6889,4 @@ vsop_var R_mer = {
         {0.00000000000,4.00267064210,234791.12827416777},
     },
 };
-
-#endif // VSOP87D_mer_H
 

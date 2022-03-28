@@ -1,8 +1,0 @@
-#include "VSOP87D_mer.h"
-#include "VSOP87D_ven.h"
-#include "VSOP87D_ear.h"
-#include "VSOP87D_mar.h"
-#include "VSOP87D_jup.h"
-#include "VSOP87D_sat.h"
-#include "VSOP87D_ura.h"
-#include "VSOP87D_nep.h"
