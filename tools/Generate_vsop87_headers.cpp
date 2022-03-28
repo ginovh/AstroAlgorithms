@@ -80,19 +80,12 @@ void GenVSOPLBR(string planet_name) {
 int main()
 {
     // TODO:
+    vector<string> planets = { "mer", "ven", "ear", "mar", "jup", "sat", "ura", "nep"};
 
-    struct VSOPLBR planetLBR;
-    string planet_name;
-    string filename;
-
-    planet_name = "ear";
-    cout << endl << "Generate VSOP87 " << planet_name << endl;
-//    getVSOPLBR(filename, planetLBR);
-    GenVSOPLBR(planet_name);
-
-    planet_name = "ven";
-    cout << endl << "Generate VSOP87 " << planet_name << endl;
-    GenVSOPLBR(planet_name);
+    for (auto planet_name: planets) {
+        cout << endl << "Generate VSOP87 " << planet_name << endl;
+        GenVSOPLBR(planet_name);
+    }
 
     return 0;
 }

@@ -161,8 +161,6 @@ struct VSOPLBR{
     vsop_var R;
 };
 
-void getVSOPLBR(string filename, VSOPLBR& planetLBR);
-
 void getHeliocentric(long double JDE, VSOPLBR planetLBR, long double& L, long double& B, long double& R);
 
 // Arguments in degrees

@@ -254,52 +254,6 @@ long double to_0_1_range(long double a) {
     return a;
 }
 
-void getVSOPLBR(string filename, VSOPLBR& planetLBR) {
-    ifstream vsopfile(filename);
-    if (!vsopfile) {
-        cout << "could not open file " << filename << endl;
-    }
-
-    string line;
-    string dummy;
-    int old_variable = 1;
-    int terms;
-    VSOPterm term;
-    vsop_series series_tmp;
-    vsop_var tmp;
-    while (getline(vsopfile, line)){
-        stringstream ss(line);
-        int variable;
-        ss >> dummy >> dummy >> dummy >> dummy >> dummy >> variable >> dummy >> dummy >> terms;
-        //            cout << "var=" << variable << ", terms=" << terms << endl;
-        series_tmp.clear();
-        for (int i=0; i<terms; i++) {
-            getline(vsopfile, line);
-            ss.str(line.substr(80));
-            ss >> term.A >> term.B >> term.C;
-            series_tmp.push_back(term);
-        }
-        if (old_variable == variable) {
-            tmp.push_back(series_tmp);
-        } else {
-            switch (old_variable) {
-            case 1: planetLBR.L=tmp;
-                break;
-            case 2: planetLBR.B=tmp;
-                break;
-            default: cout << "error";
-                break;
-            }
-            old_variable = variable;
-            tmp.clear();
-            tmp.push_back(series_tmp);
-        }
-    }
-    // only when while(getline()) is finished, the last var, R, is completey read.
-    // That's also why switch above only goes to 2
-    planetLBR.R=tmp;
-}
-
 void getHeliocentric(long double JDE, VSOPLBR planetLBR, long double& L, long double& B, long double& R) {
     long double tau = (JDE - 2451545)/365250;
     vector<long double> Lx;
