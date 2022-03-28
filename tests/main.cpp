@@ -215,12 +215,15 @@ int main()
         cout << "Epsilon  = " << Angle(Epsilon).toDms() << endl;
     }
 
+#include "VSOP87D.h"
+
     // Ex. 25b
     {
         cout << endl << "Ex. 25b" << endl;
         struct VSOPLBR planetLBR;
-        string filename("/home/ginovh/Programming/astro/VI_81/VSOP87D.ear");
-        getVSOPLBR(filename, planetLBR);
+        planetLBR.L = L_ear;
+        planetLBR.B = B_ear;
+        planetLBR.R = R_ear;
 
         long double L=0.0;
         long double B=0.0;
@@ -267,8 +270,9 @@ int main()
     {
         cout << endl << "Ex. 32a" << endl;
         struct VSOPLBR planetLBR;
-        string filename("/home/ginovh/Programming/astro/VI_81/VSOP87D.ven");
-        getVSOPLBR(filename, planetLBR);
+        planetLBR.L = L_ven;
+        planetLBR.B = B_ven;
+        planetLBR.R = R_ven;
 
         long double L=0.0;
         long double B=0.0;

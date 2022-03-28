@@ -11,18 +11,22 @@ using namespace std;
 
 #include "libmeeus.h"
 
-void GenVSOPLBR(string vsopInputFilename, string headerOutputFilename) {
+void GenVSOPLBR(string planet_name) {
     VSOPLBR planetLBR;
+    string vsopInputFilename = "/home/ginovh/Programming/astro/VI_81/VSOP87D." + planet_name;
     ifstream vsopfile(vsopInputFilename);
     if (!vsopfile) {
         cout << "could not open file " << vsopInputFilename << endl;
     }
-    ofstream headerfile(headerOutputFilename);
+    string headerFilename = "VSOP87D_"+planet_name+".h";
+    ofstream headerfile(headerFilename);
     if (!headerfile) {
-        cout << "could not open file " << headerOutputFilename << endl;
+        cout << "could not open file " << headerFilename << endl;
     }
 
-    headerfile << "#include \"libmeeus/libmeeus.h\"" << endl << endl;
+    headerfile << "#ifndef VSOP87D_" << planet_name << "_H" << endl;
+    headerfile << "#define VSOP87D_" << planet_name << "_H" << endl << endl;
+    headerfile << "#include \"libmeeus.h\"" << endl << endl;
 
     string line;
     string dummy;
@@ -43,13 +47,13 @@ void GenVSOPLBR(string vsopInputFilename, string headerOutputFilename) {
         if (degree_of_T == "*T**0") {
             switch (variable) {
             case 1:
-                headerfile << "vsop_var L_temp = {" << endl;
+                headerfile << "vsop_var L_" << planet_name << " = {" << endl;
                 break;
             case 2:
-                headerfile << "vsop_var B_temp = {" << endl;
+                headerfile << "vsop_var B_" << planet_name << " = {" << endl;
                 break;
             case 3:
-                headerfile << "vsop_var R_temp = {" << endl;
+                headerfile << "vsop_var R_" << planet_name << " = {" << endl;
                 break;
             default: cout << "error";
                 break;
@@ -69,20 +73,26 @@ void GenVSOPLBR(string vsopInputFilename, string headerOutputFilename) {
     }
     // only when while(getline()) is finished, the last var, R, is completey read.
     headerfile << "};" << endl << endl;
-}
 
-//#include "../VSOP87D_earth.h"
-#include "../generated_VSOP87D_ear.h"
+    headerfile << "#endif // VSOP87D_" << planet_name << "_H" << endl << endl;
+}
 
 int main()
 {
-    cout << endl << "Generate VSOP87 Earth" << endl;
-    struct VSOPLBR planetLBR;
-    string filename("/home/ginovh/Programming/astro/VI_81/VSOP87D.ear");
-    getVSOPLBR(filename, planetLBR);
+    // TODO:
 
-    string genfilename("generated_VSOP87D_ear.h");
-    GenVSOPLBR(filename, genfilename);
+    struct VSOPLBR planetLBR;
+    string planet_name;
+    string filename;
+
+    planet_name = "ear";
+    cout << endl << "Generate VSOP87 " << planet_name << endl;
+//    getVSOPLBR(filename, planetLBR);
+    GenVSOPLBR(planet_name);
+
+    planet_name = "ven";
+    cout << endl << "Generate VSOP87 " << planet_name << endl;
+    GenVSOPLBR(planet_name);
 
     return 0;
 }
