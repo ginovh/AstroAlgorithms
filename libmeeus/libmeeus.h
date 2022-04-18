@@ -1,8 +1,6 @@
 #ifndef LIBMEEUS_H
 #define LIBMEEUS_H
 
-#define _USE_MATH_DEFINES
-
 #include <iostream>
 #include <fstream>
 #include <sstream>

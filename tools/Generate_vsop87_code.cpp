@@ -1,5 +1,3 @@
-#define _USE_MATH_DEFINES
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -72,9 +70,79 @@ void GenVSOPLBR(string planet_name) {
     headerfile << "};" << endl << endl;
 }
 
+void GenVSOPLBR_allPlanets() {
+    string outputFilename = "VSOP87D.cpp";
+    ofstream sourcefile(outputFilename);
+    if (!sourcefile) {
+        cout << "could not open file " << outputFilename << endl;
+    }
+
+    sourcefile << "std::map<std::string, VSOPLBR> alles = {" << endl;
+
+    vector<string> planets = { "mer", "ven", "ear", "mar", "jup", "sat", "ura", "nep"};
+    for (auto planet_name: planets) {
+        string vsopInputFilename = "/home/ginovh/Programming/astro/VI_81/VSOP87D." + planet_name;
+        ifstream vsopfile(vsopInputFilename);
+        if (!vsopfile) {
+            cout << "could not open file " << vsopInputFilename << endl;
+        }
+
+        sourcefile << "    {\"" << planet_name << "\"," << endl;
+        sourcefile << "     { //" << planet_name << endl;
+
+        string line;
+        string dummy;
+        int old_variable = 1; // 1:L, 2:B, 3:R
+        int terms;
+        string degree_of_T;
+        while (getline(vsopfile, line)){
+            stringstream ss(line);
+            int variable;
+            ss >> dummy >> dummy >> dummy >> dummy >> dummy >> variable >> dummy >> degree_of_T >> terms;
+            cout << "var=" << variable << ", terms=" << terms << endl; // read var and #terms in the series
+
+            if (old_variable != variable) {
+                old_variable = variable;
+                sourcefile << "};" << endl << endl;
+            }
+
+            if (degree_of_T == "*T**0") {
+                switch (variable) {
+                case 1:
+                    sourcefile << "vsop_var L_" << planet_name << " = {" << endl;
+                    break;
+                case 2:
+                    sourcefile << "vsop_var B_" << planet_name << " = {" << endl;
+                    break;
+                case 3:
+                    sourcefile << "vsop_var R_" << planet_name << " = {" << endl;
+                    break;
+                default: cout << "error";
+                    break;
+                }
+            }
+            sourcefile << "    // " << degree_of_T << endl;
+            sourcefile << "    {" << endl;
+
+            for (int i=0; i<terms; i++) {
+                getline(vsopfile, line);
+                ss.str(line.substr(80));
+                string A,B,C;
+                ss >> A >> B >> C;
+                sourcefile << "        {" << A << "," << B << "," << C << "}," << endl;
+            }
+            sourcefile << "    }," << endl;
+        }
+        // only when while(getline()) is finished, the last var, R, is completey read.
+        sourcefile << "};" << endl << endl;
+    }
+}
+
 int main()
 {
     // TODO:
+
+    GenVSOPLBR_allPlanets();
 
     // First generate common header.
     string outputFilename = "VSOP87D.h";
