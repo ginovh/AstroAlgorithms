@@ -13,12 +13,8 @@ NONE
 
 **To Build:**
 
-From command-line:
 ```
 mkdir build; cd build
 cmake ../AstroAlgorithms/
 make -j 4
 ```
-
-In QtCreator:
-- Open CMakeLists.txt file and build
