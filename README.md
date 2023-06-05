@@ -19,6 +19,9 @@ cmake ../AstroAlgorithms/
 make -j 4
 ```
 
+**vsop87d**
+See libmeeus/vsop87d/README.md
+
 **Links**
 
 + https://alpo-j.sakura.ne.jp/Latest/Jupiter.htm
