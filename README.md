@@ -3,18 +3,29 @@
 Work in progress!
 Implement all algorithms as described in the book "Astronomical Algorithms" from Jean Meeus.
 
-**Usage:**
+**Usage**
 
 TBD
 
-**Dependencies :**
+**Dependencies**
 
 NONE
 
-**To Build:**
+**Building**
 
 ```
 mkdir build; cd build
 cmake ../AstroAlgorithms/
 make -j 4
 ```
+
+**Links**
+
+https://alpo-j.sakura.ne.jp/Latest/Jupiter.htm
+https://www.projectpluto.com/books.htm#fund_ephem
+https://github.com/ekrohn/astroalmanac
+https://askubuntu.com/questions/15354/how-to-open-file-with-default-application-from-command-line (xdg-open)
+https://www.digitalocean.com/community/tutorials/how-to-use-rsync-to-sync-local-and-remote-directories
+https://github.com/architest/pymeeus
+https://libnova.sourceforge.net/
+https://leprojetcastor.gitlab.labos.polytechnique.fr/castor/index.html
