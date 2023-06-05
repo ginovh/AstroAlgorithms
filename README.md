@@ -19,11 +19,9 @@ cmake ../AstroAlgorithms/
 make -j 4
 ```
 
-**vsop87d**
-See libmeeus/vsop87d/README.md
-
 **Links**
 
++ [VSOP87D files](libmeeus/vsop87d/README.md)
 + https://alpo-j.sakura.ne.jp/Latest/Jupiter.htm
 + https://www.projectpluto.com/books.htm#fund_ephem
 + https://github.com/ekrohn/astroalmanac
