@@ -7,8 +7,6 @@
 
 using namespace std;
 
-#include "libmeeus.h"
-
 void GenVSOPLBR(string planet_name) {
     string vsopInputFilename = "/home/ginovh/Programming/astro/VI_81/VSOP87D." + planet_name;
     ifstream vsopfile(vsopInputFilename);
@@ -77,7 +75,11 @@ void GenVSOPLBR_allPlanets() {
         cout << "could not open file " << outputFilename << endl;
     }
 
-    sourcefile << "std::map<std::string, VSOPLBR> alles = {" << endl;
+    sourcefile << "#include <map>" << endl;
+    sourcefile << "#include <string>" << endl;
+    sourcefile << "#include \"VSOP87D.h\"" << endl << endl;
+
+    sourcefile << "std::map<std::string, VSOPLBR> VSOP87D_all_terms = {" << endl;
 
     vector<string> planets = { "mer", "ven", "ear", "mar", "jup", "sat", "ura", "nep"};
     for (auto planet_name: planets) {
@@ -87,8 +89,8 @@ void GenVSOPLBR_allPlanets() {
             cout << "could not open file " << vsopInputFilename << endl;
         }
 
-        sourcefile << "    {\"" << planet_name << "\"," << endl;
-        sourcefile << "     { //" << planet_name << endl;
+        sourcefile << "    {\"" << planet_name << "\"," << endl; // key of map
+        sourcefile << "     {   //" << planet_name << endl;      // data of map
 
         string line;
         string dummy;
@@ -103,26 +105,26 @@ void GenVSOPLBR_allPlanets() {
 
             if (old_variable != variable) {
                 old_variable = variable;
-                sourcefile << "};" << endl << endl;
             }
 
             if (degree_of_T == "*T**0") {
                 switch (variable) {
                 case 1:
-                    sourcefile << "vsop_var L_" << planet_name << " = {" << endl;
+                    sourcefile << "      {  // L" << endl;
                     break;
                 case 2:
-                    sourcefile << "vsop_var B_" << planet_name << " = {" << endl;
+                    sourcefile << "      },  // end of L" << endl;
+                    sourcefile << "      {  // B" << endl;
                     break;
                 case 3:
-                    sourcefile << "vsop_var R_" << planet_name << " = {" << endl;
+                    sourcefile << "      },  // end of B" << endl;
+                    sourcefile << "      {  // R" << endl;
                     break;
                 default: cout << "error";
                     break;
                 }
             }
-            sourcefile << "    // " << degree_of_T << endl;
-            sourcefile << "    {" << endl;
+            sourcefile << "       { // " << degree_of_T << endl;
 
             for (int i=0; i<terms; i++) {
                 getline(vsopfile, line);
@@ -131,11 +133,14 @@ void GenVSOPLBR_allPlanets() {
                 ss >> A >> B >> C;
                 sourcefile << "        {" << A << "," << B << "," << C << "}," << endl;
             }
-            sourcefile << "    }," << endl;
+            sourcefile << "       }, // end of terms" << endl;
         }
         // only when while(getline()) is finished, the last var, R, is completey read.
-        sourcefile << "};" << endl << endl;
+        sourcefile << "      },  // end of R" << endl;
+        sourcefile << "     }, // end of planet data" << endl;
+        sourcefile << "    }, // end of planet " << planet_name << endl;
     }
+    sourcefile << "};" << endl; // close VSOP87D_all_terms map
 }
 
 int main()
