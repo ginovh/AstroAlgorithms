@@ -1,14 +1,16 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <cmath>
 #include <string>
 #include <vector>
+#include <filesystem>
 
+namespace fs = std::filesystem;
 using namespace std;
 
-void GenVSOPLBR(string planet_name) {
-    string vsopInputFilename = "/home/ginovh/Programming/astro/VI_81/VSOP87D." + planet_name;
+// Deprecated function, use GenVSOP87D_cpp() instead.
+void GenVSOPLBR(string planet_name, string vsop87d_path) {
+    string vsopInputFilename = vsop87d_path + "/VSOP87D." + planet_name;
     ifstream vsopfile(vsopInputFilename);
     if (!vsopfile) {
         cout << "could not open file " << vsopInputFilename << endl;
@@ -97,7 +99,7 @@ void GenVSOP87D_header() {
     headerfile << "#endif // VSOP87D_H" << endl;
 }
 
-void GenVSOP87D_cpp() {
+void GenVSOP87D_cpp(string vsop87dPath) {
     string outputFilename = "VSOP87D.cpp";
     ofstream sourcefile(outputFilename);
     if (!sourcefile) {
@@ -110,9 +112,12 @@ void GenVSOP87D_cpp() {
 
     sourcefile << "std::map<std::string, VSOPLBR> VSOP87D_all_terms = {" << endl;
 
+    fs::path directoryPath {vsop87dPath};
     vector<string> planets = { "mer", "ven", "ear", "mar", "jup", "sat", "ura", "nep"};
     for (auto planet_name: planets) {
-        string vsopInputFilename = "/home/ginovh/Programming/astro/VI_81/VSOP87D." + planet_name;
+        string filename = string("VSOP87D.") + planet_name;
+        fs::path vsopInputFilename = directoryPath / filename;
+        cout << "Reading " << vsopInputFilename << endl;
         ifstream vsopfile(vsopInputFilename);
         if (!vsopfile) {
             cout << "could not open file " << vsopInputFilename << endl;
@@ -172,10 +177,15 @@ void GenVSOP87D_cpp() {
     sourcefile << "};" << endl; // close VSOP87D_all_terms map
 }
 
-int main()
+int main(int argc, char *argv[])
 {
     GenVSOP87D_header();
-    GenVSOP87D_cpp();
+    if (argc < 2) {
+        cout << "Error: Usage: " << argv[0] << " <path to VSOP87D files>" << endl;
+        return 1;
+    } else {
+        GenVSOP87D_cpp(argv[1]);
+    }
 
     return 0;
 }
