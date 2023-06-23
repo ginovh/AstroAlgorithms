@@ -4,6 +4,7 @@
 #include <cmath>
 #include <string>
 #include <vector>
+#include <map>
 
 using namespace std;
 
@@ -252,8 +253,12 @@ long double to_0_1_range(long double a) {
     return a;
 }
 
-void getHeliocentric(long double JDE, VSOPLBR planetLBR, long double& L, long double& B, long double& R) {
+extern std::map<std::string, VSOPLBR> VSOP87D_all_terms;
+
+void getHeliocentric(long double JDE, string planet, long double& L, long double& B, long double& R) {
     long double tau = (JDE - 2451545)/365250;
+    struct VSOPLBR planetLBR = VSOP87D_all_terms[planet];
+
     vector<long double> Lx;
     for (auto var: planetLBR.L) {
         long double sum=0.0;

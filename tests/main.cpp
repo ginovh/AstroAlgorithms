@@ -216,16 +216,12 @@ int main()
     // Ex. 25b
     {
         cout << endl << "Ex. 25b" << endl;
-        struct VSOPLBR planetLBR;
-        planetLBR.L = L_ear;
-        planetLBR.B = B_ear;
-        planetLBR.R = R_ear;
 
         long double L=0.0;
         long double B=0.0;
         long double R=0.0;
         long double JDE = Date(1992,10,13, 0,0,0).get_JD();
-        getHeliocentric(JDE, planetLBR, L, B, R);
+        getHeliocentric(JDE, "ear", L, B, R);
         cout << "L = " << L << endl;
         cout << "B = " << B << endl;
         cout << "R = " << R << endl;
@@ -265,19 +261,14 @@ int main()
     // Ex. 32a
     {
         cout << endl << "Ex. 32a" << endl;
-        struct VSOPLBR planetLBR;
-        planetLBR.L = L_ven;
-        planetLBR.B = B_ven;
-        planetLBR.R = R_ven;
 
         long double L=0.0;
         long double B=0.0;
         long double R=0.0;
-        getHeliocentric(Date(1992,12,20, 0,0,0).get_JD(), planetLBR, L, B, R);
+        getHeliocentric(Date(1992,12,20, 0,0,0).get_JD(), "ven", L, B, R);
         cout << "L = " << L << endl;
         cout << "B = " << B << endl;
         cout << "R = " << R << endl;
-
     }
     return 0;
 }

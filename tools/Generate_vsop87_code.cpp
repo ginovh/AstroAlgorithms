@@ -68,7 +68,36 @@ void GenVSOPLBR(string planet_name) {
     headerfile << "};" << endl << endl;
 }
 
-void GenVSOPLBR_allPlanets() {
+// Generate header
+void GenVSOP87D_header() {
+    string outputFilename = "VSOP87D.h";
+    ofstream headerfile(outputFilename);
+    if (!headerfile) {
+        cout << "could not open file " << outputFilename << endl;
+    }
+
+    headerfile << "#ifndef VSOP87D_H" << endl;
+    headerfile << "#define VSOP87D_H" << endl << endl;
+
+    headerfile << "#include <vector>" << endl << endl;
+
+    headerfile << "struct VSOPterm {" << endl;
+    headerfile << "    long double A;" << endl;
+    headerfile << "    long double B;" << endl;
+    headerfile << "    long double C;" << endl;
+    headerfile << "};" << endl;
+    headerfile << "typedef std::vector<VSOPterm> vsop_series;" << endl;
+    headerfile << "typedef std::vector<vsop_series> vsop_var;" << endl;
+    headerfile << "struct VSOPLBR{" << endl;
+    headerfile << "    vsop_var L;" << endl;
+    headerfile << "    vsop_var B;" << endl;
+    headerfile << "    vsop_var R;" << endl;
+    headerfile << "};" << endl << endl;
+
+    headerfile << "#endif // VSOP87D_H" << endl;
+}
+
+void GenVSOP87D_cpp() {
     string outputFilename = "VSOP87D.cpp";
     ofstream sourcefile(outputFilename);
     if (!sourcefile) {
@@ -145,47 +174,8 @@ void GenVSOPLBR_allPlanets() {
 
 int main()
 {
-    // TODO:
-
-    GenVSOPLBR_allPlanets();
-
-    // First generate common header.
-    string outputFilename = "VSOP87D.h";
-    ofstream headerfile(outputFilename);
-    if (!headerfile) {
-        cout << "could not open file " << outputFilename << endl;
-    }
-
-    headerfile << "#ifndef VSOP87D_H" << endl;
-    headerfile << "#define VSOP87D_H" << endl << endl;
-
-    headerfile << "#include <vector>" << endl << endl;
-
-    headerfile << "struct VSOPterm {" << endl;
-    headerfile << "    long double A;" << endl;
-    headerfile << "    long double B;" << endl;
-    headerfile << "    long double C;" << endl;
-    headerfile << "};" << endl;
-    headerfile << "typedef std::vector<VSOPterm> vsop_series;" << endl;
-    headerfile << "typedef std::vector<vsop_series> vsop_var;" << endl;
-    headerfile << "struct VSOPLBR{" << endl;
-    headerfile << "    vsop_var L;" << endl;
-    headerfile << "    vsop_var B;" << endl;
-    headerfile << "    vsop_var R;" << endl;
-    headerfile << "};" << endl << endl;
-
-    vector<string> planets = { "mer", "ven", "ear", "mar", "jup", "sat", "ura", "nep"};
-    for (auto planet_name: planets) {
-        headerfile << "extern vsop_var ";
-        headerfile << "L_" << planet_name << ", B_" << planet_name << ", R_" << planet_name << ";" << endl;
-    }
-    headerfile << "#endif // VSOP87D_H" << endl;
-
-    // Next generate .cpp files per planet
-    for (auto planet_name: planets) {
-        cout << endl << "Generate VSOP87 " << planet_name << endl;
-        GenVSOPLBR(planet_name);
-    }
+    GenVSOP87D_header();
+    GenVSOP87D_cpp();
 
     return 0;
 }

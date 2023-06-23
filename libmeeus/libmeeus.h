@@ -148,7 +148,7 @@ long double tan(Angle a);
 
 long double to_0_1_range(long double a);
 
-void getHeliocentric(long double JDE, VSOPLBR planetLBR, long double& L, long double& B, long double& R);
+void getHeliocentric(long double JDE, std::string planet, long double& L, long double& B, long double& R);
 
 // Arguments in degrees
 void fromEquatorialToEcliptical(long double Alpha, long double Delta, long double Epsilon, long double& Beta, long double& Lambda);
