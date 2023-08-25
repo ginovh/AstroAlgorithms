@@ -9,6 +9,40 @@ using namespace std;
 
 #include "libmeeus.h"
 
+void chap44(long double JDE, long double& x, long double& y, long double& z, long double& delta) {
+    long double L=0.0;
+    long double B=0.0;
+    long double R=0.0;
+    getHeliocentric(JDE, "ear", L, B, R);
+    cout << "L = " << L << endl;
+    cout << "B = " << B << endl;
+    cout << "R = " << R << endl;
+
+    long double sunlongitude = L+180;
+    long double Beta = -B;
+    cout << "sunlongitude = " << sunlongitude << endl;
+    cout << "Beta = " << Beta << endl;
+    cout << "R = " << R << endl;
+
+    long double l=0.0;
+    long double b=0.0;
+    long double r=0.0;
+    getHeliocentric(JDE, "jup", l, b, r);
+    cout << "l = " << l << endl;
+    cout << "b = " << b << endl;
+    cout << "r = " << r << endl;
+
+    x = r * cos(b*M_PI/180) * cos(l*M_PI/180) + R * cos(sunlongitude*M_PI/180);
+    y = r * cos(b*M_PI/180) * sin(l*M_PI/180) + R * sin(sunlongitude*M_PI/180);
+    z = r * sin(b*M_PI/180)                   + R * sin(Beta*M_PI/180);
+    cout << "x = " << x << endl;
+    cout << "y = " << y << endl;
+    cout << "z = " << z << endl;
+
+    delta = sqrt(pow(x,2) + pow(y,2) + pow(z,2));
+    cout << "delta = " << delta << endl;
+}
+
 int main()
 {
     cout.precision(12);
@@ -270,5 +304,37 @@ int main()
         cout << "B = " << B << endl;
         cout << "R = " << R << endl;
     }
+
+    // Ex. 44b
+    {
+        cout << endl << "Ex. 44b" << endl;
+        // see also https://aas.aanda.org/articles/aas/abs/1998/08/contents/contents.html J.H. Lieske
+        // https://aas.aanda.org/articles/aas/abs/1998/08/ds6503/ds6503.html
+
+        long double JDE = Date(1992,12,16, 0,0,0).get_JD();
+        long double correctedJDE = JDE;
+        cout << "JDE = " << JDE << endl << endl;
+
+        long double x=0.0;
+        long double y=0.0;
+        long double z=0.0;
+        long double delta=5.0;
+        long double olddelta=5.0;
+
+        do {
+            olddelta = delta;
+            chap44(correctedJDE, x, y, z, delta);
+            long double tau=0.0; // unit: days
+            tau = 0.0057755183 * delta;
+            cout << "tau = " << tau << endl << endl;
+            correctedJDE = JDE - tau;
+        } while (abs(delta-olddelta) > 1.0e-6);
+
+        long double lambda0=0.0;
+        long double beta0=0.0;
+        cout << "lambda0 = " << lambda0 << endl;
+        cout << "beta0 = " << beta0 << endl;
+    }
+
     return 0;
 }

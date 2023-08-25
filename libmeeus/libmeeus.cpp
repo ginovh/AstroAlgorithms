@@ -6,9 +6,10 @@
 #include <vector>
 #include <map>
 
-using namespace std;
-
 #include "libmeeus.h"
+#include "vsop87d/VSOP87D.h"
+
+using namespace std;
 
 long INT(long double value)
 {
@@ -260,7 +261,7 @@ void getHeliocentric(long double JDE, string planet, long double& L, long double
     struct VSOPLBR planetLBR = VSOP87D_all_terms[planet];
 
     vector<long double> Lx;
-    for (auto var: planetLBR.L) {
+    for (auto &var: planetLBR.L) {
         long double sum=0.0;
         for (auto term: var) {
             sum = sum + term.A * cos(term.B + term.C*tau);
@@ -276,7 +277,7 @@ void getHeliocentric(long double JDE, string planet, long double& L, long double
     L = to360(L * 180/M_PI);
 
     vector<long double> Bx;
-    for (auto var: planetLBR.B) {
+    for (auto &var: planetLBR.B) {
         long double sum=0.0;
         for (auto term: var) {
             sum = sum + term.A * cos(term.B + term.C*tau);
@@ -291,7 +292,7 @@ void getHeliocentric(long double JDE, string planet, long double& L, long double
     B = (B * 180/M_PI);
 
     vector<long double> Rx;
-    for (auto var: planetLBR.R) {
+    for (auto &var: planetLBR.R) {
         long double sum=0.0;
         for (auto term: var) {
             sum = sum + term.A * cos(term.B + term.C*tau);

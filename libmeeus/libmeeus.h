@@ -8,8 +8,6 @@
 #include <string>
 #include <vector>
 
-#include "vsop87d/VSOP87D.h"
-
 using namespace std;
 
 long INT(long double value);
