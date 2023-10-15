@@ -340,6 +340,81 @@ int main()
         long double t = 0.0;
         t = JDE - 2443000.5 - tau;
         cout << "t = " << t << endl;
+
+        long double l1 = 0.0;
+        long double l2 = 0.0;
+        long double l3 = 0.0;
+        long double l4 = 0.0;
+        l1 = 106.07719 + 203.488955790 * t;
+        l2 = 175.73161 + 101.374724735 * t;
+        l3 = 120.55883 +  50.317609207 * t;
+        l4 =  84.44459 +  21.571071177 * t;
+        cout << "l1 = " << l1 << endl;
+        cout << "l2 = " << l2 << endl;
+        cout << "l3 = " << l3 << endl;
+        cout << "l4 = " << l4 << endl;
+
+        long double pi1 = 0.0;
+        long double pi2 = 0.0;
+        long double pi3 = 0.0;
+        long double pi4 = 0.0;
+        pi1 =  97.0881 + 0.16138586 * t;
+        pi2 = 154.8663 + 0.04726307 * t;
+        pi3 = 188.1840 + 0.00712734 * t;
+        pi4 = 335.2868 + 0.00184000 * t;
+        cout << "pi1 = " << pi1 << endl;
+        cout << "pi2 = " << pi2 << endl;
+        cout << "pi3 = " << pi3 << endl;
+        cout << "pi4 = " << pi4 << endl;
+
+        long double omega1 = 0.0;
+        long double omega2 = 0.0;
+        long double omega3 = 0.0;
+        long double omega4 = 0.0;
+        omega1 = 312.3346 - 0.13279386 * t;
+        omega2 = 100.4411 - 0.03263064 * t;
+        omega3 = 119.1942 - 0.00717703 * t;
+        omega4 = 322.6186 - 0.00175934 * t;
+        cout << "omega1 = " << omega1 << endl;
+        cout << "omega2 = " << omega2 << endl;
+        cout << "omega3 = " << omega3 << endl;
+        cout << "omega4 = " << omega4 << endl;
+
+        long double Gamma = 0.0;
+        Gamma = 0.33033 * sin( (163.679 + 0.0010512 * t) * M_PI/180 )
+                + 0.03439 * sin( (34.486 - 0.0161731 * t) * M_PI/180 );
+        cout << "Gamma = " << Gamma << endl;
+
+        long double Phi = 0.0;
+        Phi = 199.6766 + 0.17379190 * t;
+        cout << "Phi = " << Phi << endl;
+
+        long double Psi = 0.0;
+        Psi = 316.5182 - 0.00000208 * t;
+        cout << "Psi = " << Psi << endl;
+
+        long double G = 0.0;
+        G = 30.23756 + 0.0830925701 * t + Gamma;
+        cout << "G = " << G << endl;
+
+        long double Pi = 13.469942;
+        cout << "Pi = " << Pi << endl;
+
+        long double Sigma1 = 0.0;
+        Sigma1 =  0.47259 * sin(             2*(l1 -  l2) * M_PI/180 )
+                - 0.03478 * sin(              (pi3 - pi4) * M_PI/180 )
+                + 0.01081 * sin(        (l2 - 2*l3 + pi3) * M_PI/180 )
+                + 0.00738 * sin(                      Phi * M_PI/180 )
+                + 0.00713 * sin(        (l2 - 2*l3 + pi2) * M_PI/180 )
+                - 0.00674 * sin( (pi1 + pi3 - 2*Pi - 2*G) * M_PI/180 )
+                + 0.00666 * sin(        (l2 - 2*l3 + pi4) * M_PI/180 )
+                + 0.00445 * sin(               (l1 - pi3) * M_PI/180 )
+                - 0.00354 * sin(                (l1 - l2) * M_PI/180 )
+                - 0.00317 * sin(           (2*Psi - 2*Pi) * M_PI/180 )
+                + 0.00265 * sin(               (l1 - pi4) * M_PI/180 )
+            ;
+        cout << "Sigma1     = " << Sigma1 << endl;
+        cout << "Sigma1 Ref = -0.00654" << endl;
     }
 
     return 0;
