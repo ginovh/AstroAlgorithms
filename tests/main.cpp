@@ -412,7 +412,16 @@ int main()
                 - 0.00354 * sin(                (l1 - l2) * M_PI/180 )
                 - 0.00317 * sin(           (2*Psi - 2*Pi) * M_PI/180 )
                 + 0.00265 * sin(               (l1 - pi4) * M_PI/180 )
-            ;
+                - 0.00186 * sin(                        G * M_PI/180 )
+                + 0.00162 * sin(              (pi2 - pi3) * M_PI/180 )
+                + 0.00158 * sin(              4*(l1 - l2) * M_PI/180 )
+                - 0.00155 * sin(                (l1 - l3) * M_PI/180 )
+                - 0.00138 * sin( (Psi + omega3 - 2*Pi - 2*G) * M_PI/180 )
+                - 0.00115 * sin(   2*(l1 - 2*l2 + omega2) * M_PI/180 )
+                + 0.00089 * sin(              (pi2 - pi4) * M_PI/180 )
+                + 0.00085 * sin(  (l1 + pi3 - 2*Pi - 2*G) * M_PI/180 )
+                + 0.00083 * sin(        (omega2 - omega3) * M_PI/180 )
+                + 0.00053 * sin(           (Psi - omega2) * M_PI/180 );
         cout << "Sigma1     = " << Sigma1 << endl;
         cout << "Sigma1 Ref = -0.00654" << endl;
     }
