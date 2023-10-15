@@ -8,8 +8,6 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 long INT(long double value);
 
 class Date {
@@ -70,7 +68,7 @@ public:
     }
 };
 
-ostream& operator<<(ostream& os, const Date& d);
+std::ostream& operator<<(std::ostream& os, const Date& d);
 
 // TODO: method(s) below should go to Angle class?
 long double to360(long double d);
@@ -124,7 +122,7 @@ public:
         int hour_str = trunc(hour);
         int min = (hour - hour_str)*60;
         long double sec = (hour - hour_str -(min)/60.0)*60*60;
-        tmp = to_string(hour_str)+"h"+to_string(min)+"m"+to_string(sec);
+        tmp = std::to_string(hour_str)+"h"+std::to_string(min)+"m"+std::to_string(sec);
         return tmp;
     }
     std::string toDms() {
@@ -132,7 +130,7 @@ public:
         int degrees_str = trunc(angleInDegrees);
         int min = (angleInDegrees - degrees_str)*60;
         long double sec = (angleInDegrees - degrees_str -(min)/60.0)*60*60;
-        tmp = to_string(degrees_str)+" "+to_string(min)+" "+to_string(sec);
+        tmp = std::to_string(degrees_str)+" "+std::to_string(min)+" "+std::to_string(sec);
         return tmp;
     }
 };

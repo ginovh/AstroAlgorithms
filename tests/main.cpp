@@ -41,6 +41,11 @@ void chap44(long double JDE, long double& x, long double& y, long double& z, lon
 
     delta = sqrt(pow(x,2) + pow(y,2) + pow(z,2));
     cout << "delta = " << delta << endl;
+
+    long double lambda0=0.0;
+    long double beta0=0.0;
+    cout << "lambda0 = " << lambda0 << endl;
+    cout << "beta0 = " << beta0 << endl;
 }
 
 int main()

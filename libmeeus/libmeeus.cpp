@@ -19,7 +19,7 @@ long INT(long double value)
         return static_cast<long>(value - 1);
 }
 
-ostream& operator<<(ostream& os, const Date& d) {
+ostream &operator <<(ostream& os, const Date& d) {
     return os << d.get_JD();
 }
 
