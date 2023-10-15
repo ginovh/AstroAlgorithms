@@ -41,11 +41,6 @@ void chap44(long double JDE, long double& x, long double& y, long double& z, lon
 
     delta = sqrt(pow(x,2) + pow(y,2) + pow(z,2));
     cout << "delta = " << delta << endl;
-
-    long double lambda0=0.0;
-    long double beta0=0.0;
-    cout << "lambda0 = " << lambda0 << endl;
-    cout << "beta0 = " << beta0 << endl;
 }
 
 int main()
@@ -325,20 +320,26 @@ int main()
         long double z=0.0;
         long double delta=5.0;
         long double olddelta=5.0;
+        long double tau=0.0; // unit: days
 
         do {
             olddelta = delta;
             chap44(correctedJDE, x, y, z, delta);
-            long double tau=0.0; // unit: days
             tau = 0.0057755183 * delta;
             cout << "tau = " << tau << endl << endl;
             correctedJDE = JDE - tau;
         } while (abs(delta-olddelta) > 1.0e-6);
 
-        long double lambda0=0.0;
-        long double beta0=0.0;
+        long double lambda0 = 0.0;
+        long double beta0 = 0.0;
+        lambda0 = atan2(y,x);
+        beta0 = atan2(z, sqrt(pow(x,2) + pow(y,2)) );
         cout << "lambda0 = " << lambda0 << endl;
         cout << "beta0 = " << beta0 << endl;
+
+        long double t = 0.0;
+        t = JDE - 2443000.5 - tau;
+        cout << "t = " << t << endl;
     }
 
     return 0;
