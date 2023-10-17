@@ -403,6 +403,9 @@ int main()
         long double G = 0.0;
         G = 30.23756 + 0.0830925701 * t + Gamma;
         cout << "G = " << G << endl;
+        long double Gac = 0.0;
+        Gac = 31.97853 + 0.0334597339 * t;
+        cout << "Gac = " << Gac << endl;
 
         long double Pi = 13.469942;
         cout << "Pi = " << Pi << endl;
@@ -431,6 +434,31 @@ int main()
             + 0.00053 * sin(              (Psi - omega2) * M_PI/180 );
         cout << "Sigma1     = " << Sigma1 << endl;
         cout << "Sigma1 Ref = -0.00654" << endl << endl;
+
+        long double Sigma2 = 0.0;
+        Sigma2 =  1.06476 * sin(                 2*(l2 - l3) * M_PI/180 )
+                 + 0.04256 * sin(           (l1 - 2*l2 + pi3) * M_PI/180 )
+                 + 0.03581 * sin(                  (l2 - pi3) * M_PI/180 )
+                 + 0.02395 * sin(           (l1 - 2*l2 + pi4) * M_PI/180 )
+                 + 0.01984 * sin(                  (l2 - pi4) * M_PI/180 )
+                 - 0.01778 * sin(                         Phi * M_PI/180 )
+                 + 0.01654 * sin(                  (l2 - pi2) * M_PI/180 )
+                 + 0.01334 * sin(           (l2 - 2*l3 + pi2) * M_PI/180 )
+                 + 0.01294 * sin(                 (pi3 - pi4) * M_PI/180 )
+                 - 0.01142 * sin(                   (l2 - l3) * M_PI/180 )
+                 - 0.01057 * sin(                           G * M_PI/180 )
+                 - 0.00775 * sin(                2*(Psi - Pi) * M_PI/180 )
+                 + 0.00524 * sin(                 2*(l1 - l2) * M_PI/180 )
+                 - 0.00460 * sin(                   (l1 - l3) * M_PI/180 )
+                 + 0.00316 * sin( (Psi - 2*G + omega3 - 2*Pi) * M_PI/180 )
+                 - 0.00203 * sin(    (pi1 + pi3 - 2*Pi - 2*G) * M_PI/180 )
+                 + 0.00146 * sin(              (Psi - omega3) * M_PI/180 )
+                 - 0.00145 * sin(                         2*G * M_PI/180 )
+                 + 0.00125 * sin(              (Psi - omega4) * M_PI/180 )
+                 - 0.00115 * sin(           (l1 - 2*l3 + pi3) * M_PI/180 )
+                 - 0.00094 * sin(             2*(l2 - omega2) * M_PI/180 );
+        cout << "Sigma2     = " << Sigma2 << endl;
+        cout << "Sigma2 Ref = +1.10011" << endl << endl;
     }
 
     return 0;
