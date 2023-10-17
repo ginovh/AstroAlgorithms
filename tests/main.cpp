@@ -9,7 +9,9 @@ using namespace std;
 
 #include "libmeeus.h"
 
-void chap44(long double JDE, long double& x, long double& y, long double& z, long double& delta) {
+void chap44(long double JDE, long double& x, long double& y, long double& z, long double& delta, long double& tau) {
+    long double correctedJDE = JDE;
+
     long double L=0.0;
     long double B=0.0;
     long double R=0.0;
@@ -22,25 +24,31 @@ void chap44(long double JDE, long double& x, long double& y, long double& z, lon
     long double Beta = -B;
     cout << "sunlongitude = " << sunlongitude << endl;
     cout << "Beta = " << Beta << endl;
-    cout << "R = " << R << endl;
+    cout << "R = " << R << endl << endl;
 
     long double l=0.0;
     long double b=0.0;
     long double r=0.0;
-    getHeliocentric(JDE, "jup", l, b, r);
+    delta = 5.0;
+    long double olddelta;
+
+    do {
+        olddelta = delta;
+        tau = 0.0057755183 * delta;
+        correctedJDE = JDE - tau;
+
+        getHeliocentric(correctedJDE, "jup", l, b, r);
+
+        x = r * cos(b*M_PI/180) * cos(l*M_PI/180) + R * cos(sunlongitude*M_PI/180);
+        y = r * cos(b*M_PI/180) * sin(l*M_PI/180) + R * sin(sunlongitude*M_PI/180);
+        z = r * sin(b*M_PI/180)                   + R * sin(Beta*M_PI/180);
+
+        delta = sqrt(pow(x,2) + pow(y,2) + pow(z,2));
+    } while (abs(delta-olddelta) > 1.0e-6);
+
     cout << "l = " << l << endl;
     cout << "b = " << b << endl;
     cout << "r = " << r << endl;
-
-    x = r * cos(b*M_PI/180) * cos(l*M_PI/180) + R * cos(sunlongitude*M_PI/180);
-    y = r * cos(b*M_PI/180) * sin(l*M_PI/180) + R * sin(sunlongitude*M_PI/180);
-    z = r * sin(b*M_PI/180)                   + R * sin(Beta*M_PI/180);
-    cout << "x = " << x << endl;
-    cout << "y = " << y << endl;
-    cout << "z = " << z << endl;
-
-    delta = sqrt(pow(x,2) + pow(y,2) + pow(z,2));
-    cout << "delta = " << delta << endl;
 }
 
 int main()
@@ -312,23 +320,22 @@ int main()
         // https://aas.aanda.org/articles/aas/abs/1998/08/ds6503/ds6503.html
 
         long double JDE = Date(1992,12,16, 0,0,0).get_JD();
-        long double correctedJDE = JDE;
         cout << "JDE = " << JDE << endl << endl;
+        // this is not JDE, add ET-UT=.00068 day(58s), hardcoded for testing
+        // TODO: fix this later
+        JDE = 2448972.50068;
 
         long double x=0.0;
         long double y=0.0;
         long double z=0.0;
         long double delta=5.0;
-        long double olddelta=5.0;
         long double tau=0.0; // unit: days
-
-        do {
-            olddelta = delta;
-            chap44(correctedJDE, x, y, z, delta);
-            tau = 0.0057755183 * delta;
-            cout << "tau = " << tau << endl << endl;
-            correctedJDE = JDE - tau;
-        } while (abs(delta-olddelta) > 1.0e-6);
+        chap44(JDE, x, y, z, delta, tau);
+        cout << "x = " << x << endl;
+        cout << "y = " << y << endl;
+        cout << "z = " << z << endl;
+        cout << "delta = " << delta << endl;
+        cout << "tau = " << tau << endl << endl;
 
         long double lambda0 = 0.0;
         long double beta0 = 0.0;
@@ -339,7 +346,7 @@ int main()
 
         long double t = 0.0;
         t = JDE - 2443000.5 - tau;
-        cout << "t = " << t << endl;
+        cout << "t = " << t << endl << endl;
 
         long double l1 = 0.0;
         long double l2 = 0.0;
@@ -401,29 +408,29 @@ int main()
         cout << "Pi = " << Pi << endl;
 
         long double Sigma1 = 0.0;
-        Sigma1 =  0.47259 * sin(             2*(l1 -  l2) * M_PI/180 )
-                - 0.03478 * sin(              (pi3 - pi4) * M_PI/180 )
-                + 0.01081 * sin(        (l2 - 2*l3 + pi3) * M_PI/180 )
-                + 0.00738 * sin(                      Phi * M_PI/180 )
-                + 0.00713 * sin(        (l2 - 2*l3 + pi2) * M_PI/180 )
-                - 0.00674 * sin( (pi1 + pi3 - 2*Pi - 2*G) * M_PI/180 )
-                + 0.00666 * sin(        (l2 - 2*l3 + pi4) * M_PI/180 )
-                + 0.00445 * sin(               (l1 - pi3) * M_PI/180 )
-                - 0.00354 * sin(                (l1 - l2) * M_PI/180 )
-                - 0.00317 * sin(           (2*Psi - 2*Pi) * M_PI/180 )
-                + 0.00265 * sin(               (l1 - pi4) * M_PI/180 )
-                - 0.00186 * sin(                        G * M_PI/180 )
-                + 0.00162 * sin(              (pi2 - pi3) * M_PI/180 )
-                + 0.00158 * sin(              4*(l1 - l2) * M_PI/180 )
-                - 0.00155 * sin(                (l1 - l3) * M_PI/180 )
-                - 0.00138 * sin( (Psi + omega3 - 2*Pi - 2*G) * M_PI/180 )
-                - 0.00115 * sin(   2*(l1 - 2*l2 + omega2) * M_PI/180 )
-                + 0.00089 * sin(              (pi2 - pi4) * M_PI/180 )
-                + 0.00085 * sin(  (l1 + pi3 - 2*Pi - 2*G) * M_PI/180 )
-                + 0.00083 * sin(        (omega2 - omega3) * M_PI/180 )
-                + 0.00053 * sin(           (Psi - omega2) * M_PI/180 );
+        Sigma1 =  0.47259 * sin(                 2*(l1 - l2) * M_PI/180 )
+            - 0.03478 * sin(                 (pi3 - pi4) * M_PI/180 )
+            + 0.01081 * sin(           (l2 - 2*l3 + pi3) * M_PI/180 )
+            + 0.00738 * sin(                         Phi * M_PI/180 )
+            + 0.00713 * sin(           (l2 - 2*l3 + pi2) * M_PI/180 )
+            - 0.00674 * sin(    (pi1 + pi3 - 2*Pi - 2*G) * M_PI/180 )
+            + 0.00666 * sin(           (l2 - 2*l3 + pi4) * M_PI/180 )
+            + 0.00445 * sin(                  (l1 - pi3) * M_PI/180 )
+            - 0.00354 * sin(                   (l1 - l2) * M_PI/180 )
+            - 0.00317 * sin(              (2*Psi - 2*Pi) * M_PI/180 )
+            + 0.00265 * sin(                  (l1 - pi4) * M_PI/180 )
+            - 0.00186 * sin(                           G * M_PI/180 )
+            + 0.00162 * sin(                 (pi2 - pi3) * M_PI/180 )
+            + 0.00158 * sin(                 4*(l1 - l2) * M_PI/180 )
+            - 0.00155 * sin(                   (l1 - l3) * M_PI/180 )
+            - 0.00138 * sin( (Psi + omega3 - 2*Pi - 2*G) * M_PI/180 )
+            - 0.00115 * sin(      2*(l1 - 2*l2 + omega2) * M_PI/180 )
+            + 0.00089 * sin(                 (pi2 - pi4) * M_PI/180 )
+            + 0.00085 * sin(     (l1 + pi3 - 2*Pi - 2*G) * M_PI/180 )
+            + 0.00083 * sin(           (omega2 - omega3) * M_PI/180 )
+            + 0.00053 * sin(              (Psi - omega2) * M_PI/180 );
         cout << "Sigma1     = " << Sigma1 << endl;
-        cout << "Sigma1 Ref = -0.00654" << endl;
+        cout << "Sigma1 Ref = -0.00654" << endl << endl;
     }
 
     return 0;
