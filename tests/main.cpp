@@ -513,9 +513,9 @@ int main()
         cout << "correction     = " << correction << endl;
         long double JDE = JDE0 + correction;
         cout << "JDE     = " << JDE << endl;
-        int year; int month; long double day;
+        int year; int month; long double day; long double dummy;
         Date(JDE).get_ymd(year, month, day);
-        cout << year << " " << month << " " << day << endl;
+        cout << year << "/" << month << "/" << floor(day) << " " << floor(modf(day, &dummy)*24) << "h " << endl;
     }
 
     return 0;
