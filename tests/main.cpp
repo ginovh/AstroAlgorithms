@@ -469,13 +469,32 @@ int main()
     {
         cout << endl << "Ex. 36a" << endl;
 
-        long double JDE = calc36(1993, 10, Inferior);
-//        long double JDE = calc36(2023, 10, Inferior);
+        int k = calck("Mercury", 1993, 10, Inferior);
+        long double JDE = calc36(k, Inferior);
         int year; int month; long double day; long double dummy;
         Date(JDE).get_ymd(year, month, day);
         std::cout << "JDE     = " << JDE << std::endl;
         cout << "     " << year << "/" << month << "/" << floor(day) << " " << floor(modf(day, &dummy)*24) << "h " << endl;
-        cout << "Ref: 1993/11/6 3h" << endl;
+        cout << "Ref: 1993/11/6 3h" << endl << endl;
+
+        cout << "Mercury Superior - " << endl << endl;
+        k = calck("Mercury", 2023, 1, Superior);
+        for(int kLoopVar=k; kLoopVar<(k+10); kLoopVar++){
+            long double JDE = calc36(kLoopVar, Superior);
+            int year; int month; long double day; long double dummy;
+            Date(JDE).get_ymd(year, month, day);
+            cout << "     " << year << "/" << month << "/" << floor(day) << " " << floor(modf(day, &dummy)*24) << "h " << endl;
+        }
+
+        cout << endl << "Jupiter opposition - "  << endl;
+        k = calck("Jupiter", 2022, 3, Opposition);
+        for(int kLoopVar=k; kLoopVar<(k+10); kLoopVar++){
+            long double JDE = calc36Jup(kLoopVar, Opposition);
+            int year; int month; long double day; long double dummy;
+            Date(JDE).get_ymd(year, month, day);
+            cout << "     " << year << "/" << month << "/" << floor(day) << " " << floor(modf(day, &dummy)*24) << "h " << endl;
+        }
+
     }
 
     return 0;
