@@ -315,6 +315,62 @@ int main()
         cout << "R = " << R << endl;
     }
 
+    // Ex. 33a
+    {
+        cout << endl << "Ex. 33a" << endl;
+
+        // TODO: re-use code from chap 44?
+
+        long double L=0.0;
+        long double B=0.0;
+        long double R=0.0;
+        long double L0=0.0;
+        long double B0=0.0;
+        long double R0=0.0;
+        long double JDE = Date(1992,12,20, 0,0,0).get_JD();
+
+        long double x;
+        long double y;
+        long double z;
+
+        long double delta = 0.0;
+        long double olddelta;
+        long double tau;
+        long double correctedJDE;
+
+        getHeliocentric(JDE, "ear", L0, B0, R0);
+        L0 = L0 * M_PI/180;
+        B0 = B0 * M_PI/180;
+
+        do {
+            olddelta = delta;
+            tau = 0.0057755183 * delta;
+            correctedJDE = JDE - tau;
+
+            getHeliocentric(correctedJDE, "ven", L, B, R);
+
+            L = L * M_PI/180;
+            B = B * M_PI/180;
+
+            x = R * cos(B) * cos(L) - R0 * cos(B0) * cos(L0);
+            y = R * cos(B) * sin(L) - R0 * cos(B0) * sin(L0);
+            z = R * sin(B)          - R0 * sin(B0);
+
+            delta = sqrt(pow(x,2) + pow(y,2) + pow(z,2));
+        } while (abs(delta-olddelta) > 1.0e-6);
+
+        cout << "x = " << x << endl;
+        cout << "y = " << y << endl;
+        cout << "z = " << z << endl;
+        cout << "delta = " << delta << endl;
+        cout << "tau = " << tau << endl;
+        long double lambda = atan2(y,x);;
+        long double beta = atan2(z, sqrt(pow(x,2) + pow(y,2)) );
+        cout << "lambda = " << lambda << endl;
+        cout << "beta = " << beta << endl;
+        // TODO: apply (b) effect of aberration + calculate (33.5)
+    }
+
     // Ex. 44b
     {
         cout << endl << "Ex. 44b" << endl;
@@ -487,12 +543,20 @@ int main()
         }
 
         cout << endl << "Jupiter opposition - "  << endl;
-        k = calck("Jupiter", 2022, 3, Opposition);
+        k = calck("Jupiter", 2004, 3, Opposition);
         for(int kLoopVar=k; kLoopVar<(k+10); kLoopVar++){
             long double JDE = calc36Jup(kLoopVar, Opposition);
             int year; int month; long double day; long double dummy;
             Date(JDE).get_ymd(year, month, day);
-            cout << "     " << year << "/" << month << "/" << floor(day) << " " << floor(modf(day, &dummy)*24) << "h " << endl;
+
+            long double L=0.0;
+            long double B=0.0;
+            long double R=0.0;
+            getHeliocentric(JDE, "jup", L, B, R);
+
+            cout << "     " << year << "/" << month << "/" << floor(day) << " " << floor(modf(day, &dummy)*24) << "h "
+                 << " distance: " << R
+                 << endl;
         }
 
     }
