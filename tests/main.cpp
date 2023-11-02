@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <sstream>
 #include <cmath>
@@ -10,6 +11,41 @@ using namespace std;
 
 #include "libmeeus.h"
 #include "Chapter36.h"
+
+void chap33(std::string planet, long double JDE, long double& x, long double& y, long double& z, long double& delta, long double& tau) {
+    // TODO: re-use code from chap 44?
+    long double L=0.0;
+    long double B=0.0;
+    long double R=0.0;
+    long double L0=0.0;
+    long double B0=0.0;
+    long double R0=0.0;
+
+    delta = 0.0;
+    long double olddelta;
+    long double correctedJDE;
+
+    getHeliocentric(JDE, "ear", L0, B0, R0);
+    L0 = L0 * M_PI/180;
+    B0 = B0 * M_PI/180;
+
+    do {
+        olddelta = delta;
+        tau = 0.0057755183 * delta;
+        correctedJDE = JDE - tau;
+
+        getHeliocentric(correctedJDE, planet, L, B, R);
+
+        L = L * M_PI/180;
+        B = B * M_PI/180;
+
+        x = R * cos(B) * cos(L) - R0 * cos(B0) * cos(L0);
+        y = R * cos(B) * sin(L) - R0 * cos(B0) * sin(L0);
+        z = R * sin(B)          - R0 * sin(B0);
+
+        delta = sqrt(pow(x,2) + pow(y,2) + pow(z,2));
+    } while (abs(delta-olddelta) > 1.0e-6);
+}
 
 void chap44(long double JDE, long double& x, long double& y, long double& z, long double& delta, long double& tau) {
     long double correctedJDE = JDE;
@@ -319,56 +355,81 @@ int main()
     {
         cout << endl << "Ex. 33a" << endl;
 
-        // TODO: re-use code from chap 44?
-
-        long double L=0.0;
-        long double B=0.0;
-        long double R=0.0;
-        long double L0=0.0;
-        long double B0=0.0;
-        long double R0=0.0;
-        long double JDE = Date(1992,12,20, 0,0,0).get_JD();
-
         long double x;
         long double y;
         long double z;
-
+        long double JDE = Date(1992,12,20, 0,0,0).get_JD();
         long double delta = 0.0;
-        long double olddelta;
         long double tau;
-        long double correctedJDE;
 
-        getHeliocentric(JDE, "ear", L0, B0, R0);
-        L0 = L0 * M_PI/180;
-        B0 = B0 * M_PI/180;
-
-        do {
-            olddelta = delta;
-            tau = 0.0057755183 * delta;
-            correctedJDE = JDE - tau;
-
-            getHeliocentric(correctedJDE, "ven", L, B, R);
-
-            L = L * M_PI/180;
-            B = B * M_PI/180;
-
-            x = R * cos(B) * cos(L) - R0 * cos(B0) * cos(L0);
-            y = R * cos(B) * sin(L) - R0 * cos(B0) * sin(L0);
-            z = R * sin(B)          - R0 * sin(B0);
-
-            delta = sqrt(pow(x,2) + pow(y,2) + pow(z,2));
-        } while (abs(delta-olddelta) > 1.0e-6);
+        chap33("ven", JDE, x, y, z, delta, tau);
 
         cout << "x = " << x << endl;
         cout << "y = " << y << endl;
         cout << "z = " << z << endl;
         cout << "delta = " << delta << endl;
         cout << "tau = " << tau << endl;
+
         long double lambda = atan2(y,x);;
         long double beta = atan2(z, sqrt(pow(x,2) + pow(y,2)) );
         cout << "lambda = " << lambda << endl;
         cout << "beta = " << beta << endl;
         // TODO: apply (b) effect of aberration + calculate (33.5)
+    }
+
+    // Ex. 36a
+    {
+        cout << endl << "Ex. 36a" << endl;
+
+        int k = calck("Mercury", 1993, 10, Inferior);
+        long double JDE = calc36(k, Inferior);
+        int year; int month; long double day; long double dummy;
+        Date(JDE).get_ymd(year, month, day);
+        std::cout << "JDE     = " << JDE << std::endl;
+        cout << "     " << year << "/" << month << "/" << floor(day) << " " << floor(modf(day, &dummy)*24) << "h " << endl;
+        cout << "Ref: 1993/11/6 3h" << endl << endl;
+
+        cout << "Mercury Superior - " << endl << endl;
+        k = calck("Mercury", 2023, 1, Superior);
+        for(int kLoopVar=k; kLoopVar<(k+10); kLoopVar++){
+            long double JDE = calc36(kLoopVar, Superior);
+            int year; int month; long double day; long double dummy;
+            Date(JDE).get_ymd(year, month, day);
+            cout << "     " << year << "/" << month << "/" << floor(day) << " " << floor(modf(day, &dummy)*24) << "h " << endl;
+        }
+
+        cout << endl << "Jupiter opposition - "  << endl;
+        cout << "     Date           Dist.      Diam.     h"  << endl;
+        k = calck("Jupiter", 2004, 3, Opposition);
+        for(int kLoopVar=k; kLoopVar<(k+11); kLoopVar++){
+            long double JDE = calc36Jup(kLoopVar, Opposition);
+            int year; int month; long double day; long double dummy;
+            Date(JDE).get_ymd(year, month, day);
+
+            long double x;
+            long double y;
+            long double z;
+            long double delta = 0.0;
+            long double tau;
+
+            chap33("jup", JDE, x, y, z, delta, tau);
+
+            long double s = 98.44/delta; // chap. 55
+
+            long double lambda = atan2(y,x);;
+            long double beta = atan2(z, sqrt(pow(x,2) + pow(y,2)) );
+            long double Alpha;
+            long double Delta;
+            long double Epsilon = 23.4392911;
+            fromEclipticalToEquatorial(Alpha, Delta, Epsilon, beta/M_PI*180, lambda/M_PI*180);
+
+            cout << "     " << year << "/" << month << "/" << floor(day) << " " << floor(modf(day, &dummy)*24) << "h "
+                 << "  " << setprecision(5) << delta
+                 << "  " << setprecision(3) << s*2
+                 << "  " << setprecision(3) << 90-51+Delta
+                 << endl;
+        }
+
     }
 
     // Ex. 44b
@@ -472,26 +533,26 @@ int main()
 
         long double Sigma1 = 0.0;
         Sigma1 =  0.47259 * sin(                 2*(l1 - l2) * M_PI/180 )
-            - 0.03478 * sin(                 (pi3 - pi4) * M_PI/180 )
-            + 0.01081 * sin(           (l2 - 2*l3 + pi3) * M_PI/180 )
-            + 0.00738 * sin(                         Phi * M_PI/180 )
-            + 0.00713 * sin(           (l2 - 2*l3 + pi2) * M_PI/180 )
-            - 0.00674 * sin(    (pi1 + pi3 - 2*Pi - 2*G) * M_PI/180 )
-            + 0.00666 * sin(           (l2 - 2*l3 + pi4) * M_PI/180 )
-            + 0.00445 * sin(                  (l1 - pi3) * M_PI/180 )
-            - 0.00354 * sin(                   (l1 - l2) * M_PI/180 )
-            - 0.00317 * sin(              (2*Psi - 2*Pi) * M_PI/180 )
-            + 0.00265 * sin(                  (l1 - pi4) * M_PI/180 )
-            - 0.00186 * sin(                           G * M_PI/180 )
-            + 0.00162 * sin(                 (pi2 - pi3) * M_PI/180 )
-            + 0.00158 * sin(                 4*(l1 - l2) * M_PI/180 )
-            - 0.00155 * sin(                   (l1 - l3) * M_PI/180 )
-            - 0.00138 * sin( (Psi + omega3 - 2*Pi - 2*G) * M_PI/180 )
-            - 0.00115 * sin(      2*(l1 - 2*l2 + omega2) * M_PI/180 )
-            + 0.00089 * sin(                 (pi2 - pi4) * M_PI/180 )
-            + 0.00085 * sin(     (l1 + pi3 - 2*Pi - 2*G) * M_PI/180 )
-            + 0.00083 * sin(           (omega2 - omega3) * M_PI/180 )
-            + 0.00053 * sin(              (Psi - omega2) * M_PI/180 );
+                 - 0.03478 * sin(                 (pi3 - pi4) * M_PI/180 )
+                 + 0.01081 * sin(           (l2 - 2*l3 + pi3) * M_PI/180 )
+                 + 0.00738 * sin(                         Phi * M_PI/180 )
+                 + 0.00713 * sin(           (l2 - 2*l3 + pi2) * M_PI/180 )
+                 - 0.00674 * sin(    (pi1 + pi3 - 2*Pi - 2*G) * M_PI/180 )
+                 + 0.00666 * sin(           (l2 - 2*l3 + pi4) * M_PI/180 )
+                 + 0.00445 * sin(                  (l1 - pi3) * M_PI/180 )
+                 - 0.00354 * sin(                   (l1 - l2) * M_PI/180 )
+                 - 0.00317 * sin(              (2*Psi - 2*Pi) * M_PI/180 )
+                 + 0.00265 * sin(                  (l1 - pi4) * M_PI/180 )
+                 - 0.00186 * sin(                           G * M_PI/180 )
+                 + 0.00162 * sin(                 (pi2 - pi3) * M_PI/180 )
+                 + 0.00158 * sin(                 4*(l1 - l2) * M_PI/180 )
+                 - 0.00155 * sin(                   (l1 - l3) * M_PI/180 )
+                 - 0.00138 * sin( (Psi + omega3 - 2*Pi - 2*G) * M_PI/180 )
+                 - 0.00115 * sin(      2*(l1 - 2*l2 + omega2) * M_PI/180 )
+                 + 0.00089 * sin(                 (pi2 - pi4) * M_PI/180 )
+                 + 0.00085 * sin(     (l1 + pi3 - 2*Pi - 2*G) * M_PI/180 )
+                 + 0.00083 * sin(           (omega2 - omega3) * M_PI/180 )
+                 + 0.00053 * sin(              (Psi - omega2) * M_PI/180 );
         cout << "Sigma1     = " << Sigma1 << endl;
         cout << "Sigma1 Ref = -0.00654" << endl << endl;
 
@@ -519,46 +580,6 @@ int main()
                  - 0.00094 * sin(             2*(l2 - omega2) * M_PI/180 );
         cout << "Sigma2     = " << Sigma2 << endl;
         cout << "Sigma2 Ref = +1.10011" << endl << endl;
-    }
-
-    // Ex. 36a
-    {
-        cout << endl << "Ex. 36a" << endl;
-
-        int k = calck("Mercury", 1993, 10, Inferior);
-        long double JDE = calc36(k, Inferior);
-        int year; int month; long double day; long double dummy;
-        Date(JDE).get_ymd(year, month, day);
-        std::cout << "JDE     = " << JDE << std::endl;
-        cout << "     " << year << "/" << month << "/" << floor(day) << " " << floor(modf(day, &dummy)*24) << "h " << endl;
-        cout << "Ref: 1993/11/6 3h" << endl << endl;
-
-        cout << "Mercury Superior - " << endl << endl;
-        k = calck("Mercury", 2023, 1, Superior);
-        for(int kLoopVar=k; kLoopVar<(k+10); kLoopVar++){
-            long double JDE = calc36(kLoopVar, Superior);
-            int year; int month; long double day; long double dummy;
-            Date(JDE).get_ymd(year, month, day);
-            cout << "     " << year << "/" << month << "/" << floor(day) << " " << floor(modf(day, &dummy)*24) << "h " << endl;
-        }
-
-        cout << endl << "Jupiter opposition - "  << endl;
-        k = calck("Jupiter", 2004, 3, Opposition);
-        for(int kLoopVar=k; kLoopVar<(k+10); kLoopVar++){
-            long double JDE = calc36Jup(kLoopVar, Opposition);
-            int year; int month; long double day; long double dummy;
-            Date(JDE).get_ymd(year, month, day);
-
-            long double L=0.0;
-            long double B=0.0;
-            long double R=0.0;
-            getHeliocentric(JDE, "jup", L, B, R);
-
-            cout << "     " << year << "/" << month << "/" << floor(day) << " " << floor(modf(day, &dummy)*24) << "h "
-                 << " distance: " << R
-                 << endl;
-        }
-
     }
 
     return 0;
