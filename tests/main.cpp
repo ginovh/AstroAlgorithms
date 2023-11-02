@@ -4,6 +4,7 @@
 #include <cmath>
 #include <string>
 #include <vector>
+#include <map>
 
 using namespace std;
 
@@ -466,12 +467,30 @@ int main()
     // Ex. 36a
     {
         cout << endl << "Ex. 36a" << endl;
-//        long double Y = 1993 + (10./12);
-        long double Y = 2023 + (10./12);
-        long double A = 2451612.023;
-        long double B = 115.8774771;
-        long double M0 = 63.5867;
-        long double M1 = 114.2088742;
+        long double Y = 1993 + (10./12);
+//        long double Y = 2023 + (10./12);
+
+        // Table 36.A
+        class table36aRow {
+        public:
+            long double A;
+            long double B;
+            long double M0;
+            long double M1;
+        };
+
+        map<std::string, std::vector<table36aRow > > table36a =
+            {
+                {"Mercury", { {2451612.023, 115.8774771, 63.5867, 114.2088742}, {2451554.084, 115.8774771, 6.4822, 114.2088742} } },
+                {"Venus", { {2451996.706, 583.921361, 82.7311, 215.513058}, {2451704.746, 583.921361, 154.9745, 215.513058} } },
+                {"Mars", { {2451996.706, 583.921361, 82.7311, 215.513058}, {2451704.746, 583.921361, 154.9745, 215.513058} } },
+                {"Jupiter", { {2451996.706, 583.921361, 82.7311, 215.513058}, {2451704.746, 583.921361, 154.9745, 215.513058} } }
+            };
+
+        long double A = table36a["Mercury"][0].A;
+        long double B = table36a["Mercury"][0].B;
+        long double M0 = table36a["Mercury"][0].M0;
+        long double M1 = table36a["Mercury"][0].M1;
         int k = round((365.2425 * Y + 1721060 - A) / B);
         cout << "k     = " << k << endl;
         long double JDE0 = A + k*B;
@@ -516,6 +535,7 @@ int main()
         int year; int month; long double day; long double dummy;
         Date(JDE).get_ymd(year, month, day);
         cout << year << "/" << month << "/" << floor(day) << " " << floor(modf(day, &dummy)*24) << "h " << endl;
+        cout << "Ref: 1993/11/6 3h" << endl;
     }
 
     return 0;
