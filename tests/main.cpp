@@ -467,8 +467,6 @@ int main()
     // Ex. 36a
     {
         cout << endl << "Ex. 36a" << endl;
-        long double Y = 1993 + (10./12);
-//        long double Y = 2023 + (10./12);
 
         // Table 36.A
         class table36aRow {
@@ -487,6 +485,38 @@ int main()
                 {"Jupiter", { {2451996.706, 583.921361, 82.7311, 215.513058}, {2451704.746, 583.921361, 154.9745, 215.513058} } }
             };
 
+        // Table 36.B
+        std::vector<std::vector<std::vector<long double > > > Merc_periodicTerms = {
+            {
+                { 0.0545,  0.0002,  0.00000},
+                {-6.2008,  0.0074,  0.00003},
+                {-3.2750, -0.0197,  0.00001},
+                { 0.4737, -0.0052, -0.00001},
+                { 0.8111,  0.0033, -0.00002},
+                { 0.0037,  0.0018,  0.00000},
+                {-0.1768,  0.0000,  0.00001},
+                {-0.0211, -0.0004,  0.00000},
+                { 0.0326, -0.0003,  0.00000},
+                { 0.0083,  0.0001,  0.00000},
+                {-0.0040,  0.0001,  0.00000}
+            },
+            {
+                {-0.0548, -0.0002,  0.00000},
+                { 7.3894, -0.0100, -0.00003},
+                { 3.2200,  0.0197, -0.00001},
+                { 0.8383, -0.0064, -0.00001},
+                { 0.9666,  0.0039, -0.00003},
+                { 0.0770, -0.0026,  0.00000},
+                { 0.2758,  0.0002, -0.00002},
+                {-0.0128, -0.0008,  0.00000},
+                { 0.0734, -0.0004, -0.00001},
+                {-0.0122, -0.0002,  0.00000},
+                { 0.0173, -0.0002,  0.00000}
+            }
+        };
+
+        long double Y = 1993 + (10./12);
+        //        long double Y = 2023 + (10./12);
         long double A = table36a["Mercury"][0].A;
         long double B = table36a["Mercury"][0].B;
         long double M0 = table36a["Mercury"][0].M0;
@@ -498,43 +528,17 @@ int main()
         long double T = (JDE0 - 2451545)/36525;
         cout << "T     = " << T << endl;
         long double T2 = T*T;
-        long double Merc_inferior_periodicTerms[11][3] = {
-            { 0.0545,  0.0002,  0.00000},
-            {-6.2008,  0.0074,  0.00003},
-            {-3.2750, -0.0197,  0.00001},
-            { 0.4737, -0.0052, -0.00001},
-            { 0.8111,  0.0033, -0.00002},
-            { 0.0037,  0.0018,  0.00000},
-            {-0.1768,  0.0000,  0.00001},
-            {-0.0211, -0.0004,  0.00000},
-            { 0.0326, -0.0003,  0.00000},
-            { 0.0083,  0.0001,  0.00000},
-            {-0.0040,  0.0001,  0.00000}
-        };
-        long double Merc_superior_periodicTerms[11][3] = {
-            {-0.0548, -0.0002,  0.00000},
-            { 7.3894, -0.0100, -0.00003},
-            { 3.2200,  0.0197, -0.00001},
-            { 0.8383, -0.0064, -0.00001},
-            { 0.9666,  0.0039, -0.00003},
-            { 0.0770, -0.0026,  0.00000},
-            { 0.2758,  0.0002, -0.00002},
-            {-0.0128, -0.0008,  0.00000},
-            { 0.0734, -0.0004, -0.00001},
-            {-0.0122, -0.0002,  0.00000},
-            { 0.0173, -0.0002,  0.00000}
-        };
-        long double correction = Merc_inferior_periodicTerms[0][0] + Merc_inferior_periodicTerms[0][1]*T + Merc_inferior_periodicTerms[0][2]*T2;
+        long double correction = Merc_periodicTerms[0][0][0] + Merc_periodicTerms[0][0][1]*T + Merc_periodicTerms[0][0][2]*T2;
         for(int i=1; i<6; i++){
-            correction += (Merc_inferior_periodicTerms[2*i-1][0] + Merc_inferior_periodicTerms[2*i-1][1]*T + Merc_inferior_periodicTerms[2*i-1][2]*T2) * sin(i*M);
-            correction += (Merc_inferior_periodicTerms[2*i][0] + Merc_inferior_periodicTerms[2*i][1]*T + Merc_inferior_periodicTerms[2*i][2]*T2) * cos(i*M);
+            correction += (Merc_periodicTerms[0][2*i-1][0] + Merc_periodicTerms[0][2*i-1][1]*T + Merc_periodicTerms[0][2*i-1][2]*T2) * sin(i*M);
+            correction += (Merc_periodicTerms[0][2*i][0] + Merc_periodicTerms[0][2*i][1]*T + Merc_periodicTerms[0][2*i][2]*T2) * cos(i*M);
         }
         cout << "correction     = " << correction << endl;
         long double JDE = JDE0 + correction;
         cout << "JDE     = " << JDE << endl;
         int year; int month; long double day; long double dummy;
         Date(JDE).get_ymd(year, month, day);
-        cout << year << "/" << month << "/" << floor(day) << " " << floor(modf(day, &dummy)*24) << "h " << endl;
+        cout << "     " << year << "/" << month << "/" << floor(day) << " " << floor(modf(day, &dummy)*24) << "h " << endl;
         cout << "Ref: 1993/11/6 3h" << endl;
     }
 
