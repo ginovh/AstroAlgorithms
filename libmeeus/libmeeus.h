@@ -87,16 +87,17 @@ std::string toHmsString(long double hour);
 
 std::string toDmsString(long double angleInDegrees);
 
+// Angle in degrees
 class Angle {
+    long double angleInDegrees;
 public:
     enum AngleFormat {
         HMS,
         DMS
     };
-    long double angleInDegrees;
     Angle(): angleInDegrees(0.0) {
     }
-    Angle(long double a): angleInDegrees(a) { //assume this is always DMS format
+    Angle(long double a): angleInDegrees(a) { //assume this is always degrees, not hours.
     }
     Angle(int degree, int min, long double sec, AngleFormat a = Angle::DMS) {
         if (degree<0) { // see p. 9
@@ -109,13 +110,24 @@ public:
             angleInDegrees = (degree + min/60.0 + sec/(60.*60))*15;
         }
     }
-    // TODO: also add Angle operator-(long double a) ?
+
+    // conversion operator, makes it possible to use Angle object where a long double is expected.
+    // see https://learn.microsoft.com/en-us/cpp/cpp/user-defined-type-conversions-cpp?view=msvc-170
+    operator long double() const {return angleInDegrees;}
+
     Angle operator-(Angle a) {
         return Angle(angleInDegrees - a.angleInDegrees);
     }
     Angle operator+(Angle a) {
         return Angle(angleInDegrees + a.angleInDegrees);
     }
+    Angle operator-(long double a) {
+        return Angle(angleInDegrees - a);
+    }
+    Angle operator+(long double a) {
+        return Angle(angleInDegrees + a);
+    }
+
     std::string toHms() {
         std::string tmp;
         long double hour = angleInDegrees/15;

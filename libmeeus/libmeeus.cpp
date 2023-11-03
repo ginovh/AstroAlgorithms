@@ -235,13 +235,13 @@ std::string toDmsString(long double angleInDegrees) {
 // Of nieuwe acos_d() ? Of Angle constructor die radians als arg neemt?
 
 long double sin(Angle a) {
-    return sin(a.angleInDegrees * M_PI / 180.0);
+    return sin(a * M_PI / 180.0);
 }
 long double cos(Angle a) {
-    return cos(a.angleInDegrees * M_PI / 180.0);
+    return cos(a * M_PI / 180.0);
 }
 long double tan(Angle a) {
-    return tan(a.angleInDegrees * M_PI / 180.0);
+    return tan(a * M_PI / 180.0);
 }
 
 long double to_0_1_range(long double a) {

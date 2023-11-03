@@ -14,6 +14,7 @@ using namespace std;
 
 // Interpolation formula (3.3)
 long double chap3(std::vector<long double> y, long double n) {
+    // TODO: assert y.size() == 3
     long double a=y[1]-y[0];
     long double b=y[2]-y[1];
     long double c=b-a;
@@ -105,12 +106,12 @@ int main()
     // Ex. 1a, p. 8
     Angle aa = Angle(9,14,55.8, Angle::HMS);
     cout << "aa = " << aa.toHms() << endl;
-    cout << "aa = " << aa.angleInDegrees << endl;
+    cout << "aa = " << aa << endl;
 
     // Don't call constructor explicit
     Angle bb = 138.73250;
     cout << "bb = " << bb.toHms() << endl;
-    cout << "bb = " << bb.angleInDegrees << endl;
+    cout << "bb = " << bb << endl;
 
     // p. 60
     // TODO: use floor i.o. INT? Or use floor inside INT() definition?
@@ -202,89 +203,91 @@ int main()
         long double Theta0 = getSideralTime(Date(1987,4,10, 19,21,0).get_JD());
         long double A;
         long double h;
-        fromEquatorialToHorizontal(L.angleInDegrees, Phi.angleInDegrees, Alpha.angleInDegrees, Delta.angleInDegrees, Theta0, A, h);
+        fromEquatorialToHorizontal(L, Phi, Alpha, Delta, Theta0, A, h);
         cout << "A = " << A << endl;
         cout << "h = " << h << endl;
     }
 
     // Ex. 15a
-    cout << endl << "Ex. 15a" << endl;
-    Angle L = Angle(71,5,0);
-    Angle Phi = Angle(42,20,0);
-    long double Theta0 = getSideralTime(Date(1988,3,20, 0,0,0).get_JD());
-    cout << "Theta0 = " << Theta0 << endl;
-    Angle Alpha[3] = {Angle(40.68021), Angle(41.73129), Angle(42.78204)};
-    Angle Delta[3] = {Angle(18.04761), Angle(18.44092), Angle(18.82742)};
-    Angle h0 = Angle(-0.5667);
-    long double deltaT = 56; // TODO: calculate? See Chap. 10
+    {
+        cout << endl << "Ex. 15a" << endl;
+        Angle L = Angle(71,5,0);
+        Angle Phi = Angle(42,20,0);
+        long double Theta0 = getSideralTime(Date(1988,3,20, 0,0,0).get_JD());
+        cout << "Theta0 = " << Theta0 << endl;
+        Angle Alpha[3] = {Angle(40.68021), Angle(41.73129), Angle(42.78204)};
+        Angle Delta[3] = {Angle(18.04761), Angle(18.44092), Angle(18.82742)};
+        Angle h0 = Angle(-0.5667);
+        long double deltaT = 56; // TODO: calculate? See Chap. 10
 
-    long double secondMember = (sin(h0)-sin(Phi)*sin(Delta[1]))/(cos(Phi)*cos(Delta[1]));
-    if (abs(secondMember)>1) { // acos() returns nan if >1 (or complex getal?)
-        cout << "circumpolar!" << endl;
-    } else {
-        Angle H0 = acos(secondMember) *180.0/M_PI;
-        cout << "H0 = " << H0.angleInDegrees << endl;
-        long double m[3];
-        long double Theta[3];
-        long double n[3];
-        m[0] = (Alpha[1].angleInDegrees + L.angleInDegrees - Theta0)/360;
-        m[1] = m[0] - H0.angleInDegrees/360;
-        m[2] = m[0] + H0.angleInDegrees/360;
+        long double secondMember = (sin(h0)-sin(Phi)*sin(Delta[1]))/(cos(Phi)*cos(Delta[1]));
+        if (abs(secondMember)>1) { // acos() returns nan if >1 (or complex getal?)
+            cout << "circumpolar!" << endl;
+        } else {
+            Angle H0 = acos(secondMember) *180.0/M_PI;
+            cout << "H0 = " << H0 << endl;
+            long double m[3];
+            long double Theta[3];
+            long double n[3];
+            m[0] = (Alpha[1] + L - Theta0)/360;
+            m[1] = m[0] - H0/360;
+            m[2] = m[0] + H0/360;
 
-        // more exact times
-        for (int i=0; i<3; i++) {
-            m[i] = to_0_1_range(m[i]);
-            Theta[i] = to360(Theta0 + 360.985647*m[i]);
-            n[i] = m[i] + deltaT/86400;
-        }
-        for (int i=0; i<3; i++) {
-            cout << "m[" << i << "] = " << m[i] << endl;
-        }
-        for (int i=0; i<3; i++) {
-            cout << "Theta[" << i << "] = " << Theta[i] << endl;
-        }
-        for (int i=0; i<3; i++) {
-            cout << "n[" << i << "] = " << n[i] << endl;
-        }
+            // more exact times
+            for (int i=0; i<3; i++) {
+                m[i] = to_0_1_range(m[i]);
+                Theta[i] = to360(Theta0 + 360.985647*m[i]);
+                n[i] = m[i] + deltaT/86400;
+            }
+            for (int i=0; i<3; i++) {
+                cout << "m[" << i << "] = " << m[i] << endl;
+            }
+            for (int i=0; i<3; i++) {
+                cout << "Theta[" << i << "] = " << Theta[i] << endl;
+            }
+            for (int i=0; i<3; i++) {
+                cout << "n[" << i << "] = " << n[i] << endl;
+            }
 
-        // Interpolation using formula (3.3)
-        std::vector<long double> ya = {Alpha[0].angleInDegrees, Alpha[1].angleInDegrees, Alpha[2].angleInDegrees};
-        for (int i=0; i<3; i++) {
-            Alpha[i] = chap3(ya, n[i]);
-            cout << "Alpha[" << i << "] = " << Alpha[i].angleInDegrees << endl;
-        }
-        std::vector<long double> yd = {Delta[0].angleInDegrees, Delta[1].angleInDegrees, Delta[2].angleInDegrees};
-        for (int i=0; i<3; i++) {
-            Delta[i] = chap3(yd, n[i]);
-            cout << "Delta[" << i << "] = " << Delta[i].angleInDegrees << endl;
-        }
+            // Interpolation using formula (3.3)
+            std::vector<long double> ya = {Alpha[0], Alpha[1], Alpha[2]};
+            for (int i=0; i<3; i++) {
+                Alpha[i] = chap3(ya, n[i]);
+                cout << "Alpha[" << i << "] = " << Alpha[i] << endl;
+            }
+            std::vector<long double> yd = {Delta[0], Delta[1], Delta[2]};
+            for (int i=0; i<3; i++) {
+                Delta[i] = chap3(yd, n[i]);
+                cout << "Delta[" << i << "] = " << Delta[i] << endl;
+            }
 
-        Angle H[3];
-        long double h[3];
-        for (int i=0; i<3; i++) {
-            H[i] = Angle(Theta[i]) - L - Alpha[i];
-            h[i] = asin(sin(Phi)*sin(Delta[i]) + cos(Phi)*cos(Delta[i])*cos(H[i])) *180.0/M_PI;
+            Angle H[3];
+            long double h[3];
+            for (int i=0; i<3; i++) {
+                H[i] = Angle(Theta[i]) - L - Alpha[i];
+                h[i] = asin(sin(Phi)*sin(Delta[i]) + cos(Phi)*cos(Delta[i])*cos(H[i])) *180.0/M_PI;
+            }
+            for (int i=0; i<3; i++) {
+                cout << "H[" << i << "] = " << H[i] << endl;
+            }
+            for (int i=0; i<3; i++) {
+                cout << "h[" << i << "] = " << h[i] << endl;
+            }
+            long double deltam[3];
+            deltam[0] = -(H[0])/360; // TODO: assert -180 < H[0] < 180
+            deltam[1] = (h[1] - h0)/(360*cos(Delta[1])*cos(Phi)*sin(H[1]));
+            deltam[2] = (h[2] - h0)/(360*cos(Delta[2])*cos(Phi)*sin(H[2]));
+            for (int i=0; i<3; i++) {
+                cout << "deltam[" << i << "] = " << deltam[i] << endl;
+            }
+            for (int i=0; i<3; i++) {
+                m[i] = m[i] + deltam[i];
+                cout << "m[" << i << "] = " << m[i] << endl;
+            }
+            cout << "Rising  = " << toHmsString(24*m[1]) << endl;
+            cout << "Transit = " << toHmsString(24*m[0]) << endl;
+            cout << "Setting = " << toHmsString(24*m[2]) << endl;
         }
-        for (int i=0; i<3; i++) {
-            cout << "H[" << i << "] = " << H[i].angleInDegrees << endl;
-        }
-        for (int i=0; i<3; i++) {
-            cout << "h[" << i << "] = " << h[i] << endl;
-        }
-        long double deltam[3];
-        deltam[0] = -(H[0].angleInDegrees)/360; // TODO: assert -180 < H[0] < 180
-        deltam[1] = (h[1] - h0.angleInDegrees)/(360*cos(Delta[1])*cos(Phi)*sin(H[1]));
-        deltam[2] = (h[2] - h0.angleInDegrees)/(360*cos(Delta[2])*cos(Phi)*sin(H[2]));
-        for (int i=0; i<3; i++) {
-            cout << "deltam[" << i << "] = " << deltam[i] << endl;
-        }
-        for (int i=0; i<3; i++) {
-            m[i] = m[i] + deltam[i];
-            cout << "m[" << i << "] = " << m[i] << endl;
-        }
-        cout << "Rising  = " << toHmsString(24*m[1]) << endl;
-        cout << "Transit = " << toHmsString(24*m[0]) << endl;
-        cout << "Setting = " << toHmsString(24*m[2]) << endl;
     }
 
     // Ex. 22a
