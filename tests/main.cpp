@@ -12,6 +12,15 @@ using namespace std;
 #include "libmeeus.h"
 #include "Chapter36.h"
 
+// Interpolation formula (3.3)
+long double chap3(std::vector<long double> y, long double n) {
+    long double a=y[1]-y[0];
+    long double b=y[2]-y[1];
+    long double c=b-a;
+    long double y2=y[1];
+    return y2 + n/2*(a+b+n*c);
+}
+
 void chap33(std::string planet, long double JDE, long double& x, long double& y, long double& z, long double& delta, long double& tau) {
     // TODO: re-use code from chap 44?
     long double L=0.0;
@@ -148,9 +157,10 @@ int main()
     cout << "Theta0 = " << getSideralTime(Date(1987,4,10, 19,21,0).get_JD()) << endl;
     cout << "Theta0 = " << Angle(getSideralTime(Date(1987,4,10, 19,21,0).get_JD())).toHms() << endl;
 
+    // Use private scope to hide variables defined here so I can use same names in other examples.
+
     // Ex. 13a
     {
-        // private scope to hide variables defined here so I can use same names in other examples.
         cout << endl << "Ex. 13a" << endl;
         long double Alpha = 116.328942;
         long double Delta = 28.026183;
@@ -207,6 +217,7 @@ int main()
     Angle Delta[3] = {Angle(18.04761), Angle(18.44092), Angle(18.82742)};
     Angle h0 = Angle(-0.5667);
     long double deltaT = 56; // TODO: calculate? See Chap. 10
+
     long double secondMember = (sin(h0)-sin(Phi)*sin(Delta[1]))/(cos(Phi)*cos(Delta[1]));
     if (abs(secondMember)>1) { // acos() returns nan if >1 (or complex getal?)
         cout << "circumpolar!" << endl;
@@ -219,6 +230,8 @@ int main()
         m[0] = (Alpha[1].angleInDegrees + L.angleInDegrees - Theta0)/360;
         m[1] = m[0] - H0.angleInDegrees/360;
         m[2] = m[0] + H0.angleInDegrees/360;
+
+        // more exact times
         for (int i=0; i<3; i++) {
             m[i] = to_0_1_range(m[i]);
             Theta[i] = to360(Theta0 + 360.985647*m[i]);
@@ -233,20 +246,16 @@ int main()
         for (int i=0; i<3; i++) {
             cout << "n[" << i << "] = " << n[i] << endl;
         }
-        long double a=Alpha[1].angleInDegrees-Alpha[0].angleInDegrees;
-        long double b=Alpha[2].angleInDegrees-Alpha[1].angleInDegrees;
-        long double c=b-a;
-        long double Alpha1=Alpha[1].angleInDegrees; // tmp store Alpha[1], otherwise it will be overwritten
+
+        // Interpolation using formula (3.3)
+        std::vector<long double> ya = {Alpha[0].angleInDegrees, Alpha[1].angleInDegrees, Alpha[2].angleInDegrees};
         for (int i=0; i<3; i++) {
-            Alpha[i] = Alpha1 + n[i]/2*(a+b+n[i]*c);
+            Alpha[i] = chap3(ya, n[i]);
             cout << "Alpha[" << i << "] = " << Alpha[i].angleInDegrees << endl;
         }
-        a=Delta[1].angleInDegrees-Delta[0].angleInDegrees;
-        b=Delta[2].angleInDegrees-Delta[1].angleInDegrees;
-        c=b-a;
-        long double Delta1=Delta[1].angleInDegrees; // tmp store Delta[1], otherwise it will be overwritten
+        std::vector<long double> yd = {Delta[0].angleInDegrees, Delta[1].angleInDegrees, Delta[2].angleInDegrees};
         for (int i=0; i<3; i++) {
-            Delta[i] = Delta1 + n[i]/2*(a+b+n[i]*c);
+            Delta[i] = chap3(yd, n[i]);
             cout << "Delta[" << i << "] = " << Delta[i].angleInDegrees << endl;
         }
 
@@ -399,9 +408,9 @@ int main()
         }
 
         cout << endl << "Jupiter opposition - "  << endl;
-        cout << "     Date           Dist.      Diam.     h"  << endl;
+        cout << "     Date              Dist.  Diam.  h"  << endl;
         k = calck("Jupiter", 2004, 3, Opposition);
-        for(int kLoopVar=k; kLoopVar<(k+11); kLoopVar++){
+        for(int kLoopVar=k; kLoopVar<(k+30); kLoopVar++){
             long double JDE = calc36Jup(kLoopVar, Opposition);
             int year; int month; long double day; long double dummy;
             Date(JDE).get_ymd(year, month, day);
@@ -423,14 +432,17 @@ int main()
             long double Epsilon = 23.4392911;
             fromEclipticalToEquatorial(Alpha, Delta, Epsilon, beta/M_PI*180, lambda/M_PI*180);
 
-            cout << "     " << year << "/" << month << "/" << floor(day) << " " << floor(modf(day, &dummy)*24) << "h "
-                 << "  " << setprecision(5) << delta
-                 << "  " << setprecision(3) << s*2
-                 << "  " << setprecision(3) << 90-51+Delta
+            cout << "     " << year << "/" << setw(2) << month << "/" << setw(2) << floor(day)
+                 << " " << setw(3) << floor(modf(day, &dummy)*24) << "h "
+                 << "  " << defaultfloat << setprecision(4) << setw(5) << delta
+                 << "  " << setprecision(4) << s*2 << "\""
+                 << "  " << setprecision(2) << 90-51+Delta
                  << endl;
         }
 
     }
+
+    cout << setprecision(12);
 
     // Ex. 44b
     {
