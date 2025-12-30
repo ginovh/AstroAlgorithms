@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 
-#include <iostream>
 #include <cmath>
 
 // Table 36.A

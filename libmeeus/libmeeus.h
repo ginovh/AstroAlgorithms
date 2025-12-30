@@ -2,11 +2,8 @@
 #define LIBMEEUS_H
 
 #include <iostream>
-#include <fstream>
-#include <sstream>
 #include <cmath>
 #include <string>
-#include <vector>
 
 long INT(long double value);
 

@@ -1,11 +1,8 @@
 #include <iostream>
 #include <iomanip>
-#include <fstream>
-#include <sstream>
 #include <cmath>
 #include <string>
 #include <vector>
-#include <map>
 
 using namespace std;
 
